@@ -36,6 +36,7 @@ THIRD_APPS =    [
                     'ninja_extra',
                     'ninja_jwt',
                     'django_rest_passwordreset',
+                    'simple_history',
                     #'import_export',
                     #'maintenance_mode',
                 ]

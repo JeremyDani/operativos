@@ -2,6 +2,8 @@ from django.db                                  import models
 from apps.auxiliares.models.lugar               import Lugar
 from apps.auxiliares.models.estatus_operativo   import EstatusOperativo
 from apps.auxiliares.models.tipo_operativo      import TipoOperativo
+from simple_history.models                      import HistoricalRecords
+from apps.historico.models.historical_libro import HistoricalLibro
 
 
 class Libro(models.Model):
@@ -17,6 +19,8 @@ class Libro(models.Model):
     lugar               = models.ForeignKey(Lugar,                      related_name = 'lugar',                 to_field = 'descripcion', on_delete = models.PROTECT)
     tipo_operativo      = models.ForeignKey(TipoOperativo,              related_name = 'tipo_operativo',        to_field = 'descripcion', on_delete = models.PROTECT)
     usar_telegram       = models.BooleanField('usar_telegram',blank=True, null=True)
+
+    history = HistoricalRecords(bases=[HistoricalLibro])
 
     class Meta:
         managed             = True
