@@ -5,7 +5,13 @@ from ninja.errors                           import ValidationError as NinjaValid
 from datetime                               import datetime
 
 from apps.cuenta.views.token                    import router as token_router
-from apps.auxiliares.views.ente                 import router as ente
+from apps.auxiliares.views.ente                 import router as ente_router
+from apps.auxiliares.views.estatus_operativo    import router as estatus_operativo_router
+from apps.auxiliares.views.lugar                import router as lugar_router
+from apps.auxiliares.views.parentesco           import router as parentesco_router
+from apps.auxiliares.views.tipo_operativo       import router as tipo_operativo_router
+from apps.auxiliares.views.excepcion            import router as excepcion_router
+from apps.auxiliares.views.lista_negra          import router as lista_negra_router
 
 api = NinjaExtraAPI(
                         title           = "Plantilla",
@@ -16,7 +22,13 @@ api = NinjaExtraAPI(
 
 
 api.add_router("/auth/",                token_router)
-api.add_router("/ente/",                ente)
+api.add_router("/ente/",                ente_router)
+api.add_router("/estatus-operativo/",   estatus_operativo_router)
+api.add_router("/lugar/",               lugar_router)
+api.add_router("/parentesco/",          parentesco_router)
+api.add_router("/tipo-operativo/",      tipo_operativo_router)
+api.add_router("/excepcion/",           excepcion_router)
+api.add_router("/lista-negra/",         lista_negra_router)
 
 api.register_controllers(ResetPasswordController)
 api.register_controllers(MyTokenObtainPairController)

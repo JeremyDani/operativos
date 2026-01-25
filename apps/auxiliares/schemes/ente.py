@@ -1,12 +1,12 @@
 from datetime   import date
 from ninja      import Schema
 
-class EstudianteSchemaOut(Schema):
+class EnteSchema(Schema):
     descripcion     : str
     motivo     : str
 
 
-class EstudianteSchemaIn(Schema):
+class EnteSchemaIn(Schema):
     descripcion     : str
     motivo     : str
    
