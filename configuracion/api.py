@@ -12,6 +12,9 @@ from apps.auxiliares.views.parentesco           import router as parentesco_rout
 from apps.auxiliares.views.tipo_operativo       import router as tipo_operativo_router
 from apps.auxiliares.views.excepcion            import router as excepcion_router
 from apps.auxiliares.views.lista_negra          import router as lista_negra_router
+from apps.operativos.views.libro import router as libro_router
+from apps.operativos.views.nomina_entes import router as nomina_entes_router
+from apps.operativos.views.vm_nomina import router as vm_nomina_router
 
 api = NinjaExtraAPI(
                         title           = "Plantilla",
@@ -29,6 +32,9 @@ api.add_router("/parentesco/",          parentesco_router)
 api.add_router("/tipo-operativo/",      tipo_operativo_router)
 api.add_router("/excepcion/",           excepcion_router)
 api.add_router("/lista-negra/",         lista_negra_router)
+api.add_router("/libro/",               libro_router)
+api.add_router("/nomina-entes/",         nomina_entes_router)
+api.add_router("/vm-nomina/",            vm_nomina_router)
 
 api.register_controllers(ResetPasswordController)
 api.register_controllers(MyTokenObtainPairController)
@@ -54,4 +60,4 @@ def validation_error_handler(request, exc):
         },
         status=400,
     )
-    
+
