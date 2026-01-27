@@ -14,7 +14,11 @@
       </thead>
       <tbody>
         <tr v-for="operativo in operativos" :key="operativo.id">
-          <td>{{ operativo.titulo }}</td>
+          <td>
+            <router-link :to="{ name: 'VerificarTrabajador', params: { id: operativo.id } }">
+              {{ operativo.titulo }}
+            </router-link>
+          </td>
           <td>{{ operativo.lugar }}</td>
           <td>{{ operativo.estatus }}</td>
           <td>
