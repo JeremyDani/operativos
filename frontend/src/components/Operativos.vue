@@ -13,7 +13,7 @@
       </thead>
       <tbody>
         <tr v-for="operativo in operativos" :key="operativo.id">
-          <td>{{ operativo.nombre }}</td>
+          <td>{{ operativo.titulo }}</td>
           <td>{{ operativo.estatus }}</td>
           <!-- Agrega más celdas según los datos -->
         </tr>
@@ -35,20 +35,20 @@ export default {
     };
   },
   methods: {
-    async fetchOperativos() {
+    fetchOperativos() {
       this.loading = true;
       this.error = null;
-      try {
-        // NOTA: La URL '/api/operativos/' es un ejemplo.
-        // Necesitamos verificar cuál es la URL correcta en tu API de Django.
-        const response = await axios.get('http://localhost:8000/api/libro/'); // <-- REVISAR ESTA URL
-        this.operativos = response.data; 
-      } catch (err) {
-        this.error = 'Error al cargar los operativos. Por favor, intenta de nuevo más tarde.';
-        console.error(err);
-      } finally {
-        this.loading = false;
-      }
+      axios.get('http://localhost:8000/libro/')
+        .then(response => {
+          this.operativos = response.data;
+        })
+        .catch(error => {
+          console.error('Error al obtener operativos:', error);
+          this.error = 'No se pudo conectar con el servidor o no se encontraron datos.';
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     }
   },
   mounted() {

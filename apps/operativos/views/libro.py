@@ -7,7 +7,25 @@ router = Router(tags=['libro'])
 
 @router.get("/", response=List[LibroSchema])
 def list_libros(request):
-    return Libro.objects.all()
+    qs = Libro.objects.select_related('estatus', 'lugar', 'tipo_operativo').all()
+    response_list = []
+    for libro in qs:
+        response_list.append({
+            "id": libro.id,
+            "titulo": libro.titulo,
+            "descripcion": libro.descripcion,
+            "fecha_inicio": libro.fecha_inicio,
+            "fecha_fin": libro.fecha_fin,
+            "motivo": libro.motivo,
+            "publicado": libro.publicado,
+            "ilustracion": libro.ilustracion,
+            "ilustracion_b64": libro.ilustracion_b64,
+            "estatus": libro.estatus.descripcion,
+            "lugar": libro.lugar.descripcion,
+            "tipo_operativo": libro.tipo_operativo.descripcion,
+            "usar_telegram": libro.usar_telegram if libro.usar_telegram is not None else False
+        })
+    return response_list
 
 @router.get("/{libro_id}", response=LibroSchema)
 def get_libro(request, libro_id: int):

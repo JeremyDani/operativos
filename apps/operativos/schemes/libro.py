@@ -11,7 +11,7 @@ class LibroSchema(Schema):
     publicado: bool
     ilustracion: str = None
     ilustracion_b64: str = None
-    estatus_id: int
-    lugar_id: int
-    tipo_operativo_id: int
+    estatus: str
+    lugar: str
+    tipo_operativo: str
     usar_telegram: bool = None
