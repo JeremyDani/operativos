@@ -16,6 +16,9 @@ from apps.operativos.views.libro import router as libro_router
 from apps.operativos.views.nomina_entes import router as nomina_entes_router
 from apps.operativos.views.vm_nomina import router as vm_nomina_router
 
+from apps.operativos.views.verificacion import router as verificacion_router
+from apps.operativos.views.participacion import router as participacion_router
+
 api = NinjaExtraAPI(
                         title           = "Plantilla",
                         description     = "API para Plantillas",
@@ -35,6 +38,8 @@ api.add_router("/lista-negra/",         lista_negra_router)
 api.add_router("/libro/",               libro_router)
 api.add_router("/nomina-entes/",         nomina_entes_router)
 api.add_router("/vm-nomina/",            vm_nomina_router)
+api.add_router("/verificacion/",         verificacion_router)
+api.add_router("/operativos/",           participacion_router)
 
 api.register_controllers(ResetPasswordController)
 api.register_controllers(MyTokenObtainPairController)

@@ -1,6 +1,12 @@
 <template>
   <div class="operativos-container">
     <h1>Lista de Operativos</h1>
+
+    <!-- Notificación -->
+    <div v-if="notification.message" :class="['notification', notification.type]">
+      {{ notification.message }}
+    </div>
+
     <div v-if="loading">Cargando...</div>
     <div v-if="error" class="error-message">{{ error }}</div>
     <table v-if="operativos.length">
@@ -63,14 +69,18 @@ export default {
       operativos: [],
       loading: true,
       error: null,
-      selectedOperativo: null, // Para guardar el operativo seleccionado
+      selectedOperativo: null,
+      notification: {
+        message: '',
+        type: '' // 'success' o 'error'
+      }
     };
   },
   methods: {
     fetchOperativos() {
       this.loading = true;
       this.error = null;
-      axios.get('http://localhost:8000/libro/')
+      axios.get('http://localhost:8000/api/libro/')
         .then(response => {
           this.operativos = response.data;
         })
@@ -82,18 +92,22 @@ export default {
           this.loading = false;
         });
     },
-    // Método para mostrar el modal con los detalles
     showDetails(operativo) {
       this.selectedOperativo = operativo;
     },
-    // Método para cerrar el modal
     closeDetails() {
       this.selectedOperativo = null;
     },
-    // Método para formatear la fecha
     formatDate(dateString) {
-      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
       return new Date(dateString).toLocaleDateString(undefined, options);
+    },
+    showNotification(message, type) {
+      this.notification.message = message;
+      this.notification.type = type;
+      setTimeout(() => {
+        this.notification.message = '';
+      }, 3000);
     }
   },
   mounted() {
@@ -104,81 +118,114 @@ export default {
 
 <style scoped>
 .operativos-container {
-  width: 80%;
-  max-width: 1200px;
-  margin: 20px auto;
   padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
 }
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.notification {
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.notification.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.notification.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
 }
+
 th, td {
   border: 1px solid #ddd;
-  padding: 12px;
+  padding: 8px;
   text-align: left;
 }
+
 th {
-  background-color: #f4f4f4;
-}
-.error-message {
-  color: red;
-}
-.details-button {
-  padding: 5px 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.details-button:hover {
-  background-color: #0056b3;
+  background-color: #f2f2f2;
 }
 
-/* Estilos para el Modal */
+.details-button, .register-button {
+  padding: 5px 10px;
+  cursor: pointer;
+  border: none;
+  border-radius: 3px;
+}
+
+.details-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.register-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.registro-form {
+  display: flex;
+  gap: 5px;
+}
+
+.registro-form input {
+  padding: 5px;
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
 }
+
 .modal-content {
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 8px;
-  width: 80%;
-  max-width: 600px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  max-width: 500px;
+  width: 100%;
   position: relative;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
 .modal-content ul {
   list-style-type: none;
   padding: 0;
 }
+
 .modal-content li {
-  padding: 8px 0;
-  border-bottom: 1px solid #eee;
-}
-.modal-content li:last-child {
-  border-bottom: none;
-}
-.close-button {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  font-size: 24px;
-  font-weight: bold;
-  cursor: pointer;
+  margin-bottom: 10px;
 }
 </style>

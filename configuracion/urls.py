@@ -9,6 +9,6 @@ urlpatterns =   [
                     path('',            inicio,             name = 'inicio'             ),
                     path("admin/",      admin.site.urls),
                     path("api/cuenta/", include('apps.cuenta.urls')),
-                    path("",            api.urls)
+                    path("api/",            api.urls)
                 ]
 
