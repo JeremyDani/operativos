@@ -1,4 +1,5 @@
 from ninja import Router, Schema
+from ninja.errors import HttpError
 from django.shortcuts import get_object_or_404
 from apps.operativos.models.vm_nomina import VmNomina
 from apps.operativos.models.nomina_entes import NominaEntes
@@ -45,9 +46,14 @@ def buscar_trabajador(request, operativo_id: int, cedula: str):
 @router.post("/{operativo_id}/guardar-participacion")
 def guardar_participacion(request, operativo_id: int, payload: TrabajadorSchema):
     operativo = get_object_or_404(Libro, id=operativo_id)
+    cedula_norm = (payload.cedula or '').strip()
+    # Evitar registros duplicados para la misma cédula y operativo
+    if Participacion.objects.filter(operativo=operativo, cedula__iexact=cedula_norm).exists():
+        raise HttpError(400, f"La cédula {cedula_norm} ya está registrada en este operativo.")
+
     participacion = Participacion.objects.create(
         operativo=operativo,
-        cedula=payload.cedula,
+        cedula=cedula_norm,
         nombres=payload.nombres,
         apellidos=payload.apellidos,
         cargo=payload.cargo,

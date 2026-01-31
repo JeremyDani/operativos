@@ -2,6 +2,7 @@
   <div id="app-container">
     <header>
       <nav>
+        <img src="/venezuela-flag.svg" alt="Venezuela" class="brand-flag" />
         <router-link to="/login" v-if="!authState.isAuthenticated">Login</router-link>
         <span v-if="authState.isAuthenticated">
           <router-link to="/operativos">Operativos</router-link>
@@ -54,5 +55,7 @@ header {
   width: 100%;
   z-index: 1000;
 }
+
+.brand-flag { height: 28px; margin-right: 12px; vertical-align: middle; }
 </style>
 

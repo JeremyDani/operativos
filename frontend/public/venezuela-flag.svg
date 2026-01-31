@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600">
+  <!-- Simple Venezuela flag: yellow, blue, red with 8 white stars -->
+  <rect width="900" height="200" y="0" fill="#FFD100"/>
+  <rect width="900" height="200" y="200" fill="#00247D"/>
+  <rect width="900" height="200" y="400" fill="#D52B1E"/>
+  <!-- stars arc on blue band -->
+  <g fill="#FFFFFF" transform="translate(450,320)">
+    <!-- positions for 8 stars -->
+    <g transform="translate(-210,0)"><polygon points="0,-12 3.5,-4 12,-4.5 5.5,1.5 8.5,10 -0.5,5  -9,10 -6,1.5 -13.5,-4 -4,-4.5"/></g>
+    <g transform="translate(-150,-10)"><polygon points="0,-12 3.5,-4 12,-4.5 5.5,1.5 8.5,10 -0.5,5  -9,10 -6,1.5 -13.5,-4 -4,-4.5"/></g>
+    <g transform="translate(-80,-20)"><polygon points="0,-12 3.5,-4 12,-4.5 5.5,1.5 8.5,10 -0.5,5  -9,10 -6,1.5 -13.5,-4 -4,-4.5"/></g>
+    <g transform="translate(-10,-24)"><polygon points="0,-12 3.5,-4 12,-4.5 5.5,1.5 8.5,10 -0.5,5  -9,10 -6,1.5 -13.5,-4 -4,-4.5"/></g>
+    <g transform="translate(60,-20)"><polygon points="0,-12 3.5,-4 12,-4.5 5.5,1.5 8.5,10 -0.5,5  -9,10 -6,1.5 -13.5,-4 -4,-4.5"/></g>
+    <g transform="translate(130,-10)"><polygon points="0,-12 3.5,-4 12,-4.5 5.5,1.5 8.5,10 -0.5,5  -9,10 -6,1.5 -13.5,-4 -4,-4.5"/></g>
+    <g transform="translate(200,0)"><polygon points="0,-12 3.5,-4 12,-4.5 5.5,1.5 8.5,10 -0.5,5  -9,10 -6,1.5 -13.5,-4 -4,-4.5"/></g>
+    <g transform="translate(270,14)"><polygon points="0,-12 3.5,-4 12,-4.5 5.5,1.5 8.5,10 -0.5,5  -9,10 -6,1.5 -13.5,-4 -4,-4.5"/></g>
+  </g>
+</svg>

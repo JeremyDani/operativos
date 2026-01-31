@@ -52,3 +52,10 @@ pip install -U --no-deps flask
 
 ## RECOLECTAR ARCHIVOS ESTATICOS
 python manage.py collectstatic 
+
+## INICIAR FRONTEND (Vite + Vue)
+# Desde la raíz del proyecto ejecutar:
+# 1) Instalar dependencias (solo la primera vez o si cambian):
+#    cd frontend && npm install
+# 2) Levantar el servidor de desarrollo:
+#    cd frontend && npm run dev

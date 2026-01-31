@@ -1,4 +1,5 @@
 from django.db import models
+from simple_history.models import HistoricalRecords
 from apps.operativos.models.libro import Libro
 
 class Participacion(models.Model):
@@ -9,6 +10,7 @@ class Participacion(models.Model):
     cargo = models.CharField(max_length=255, null=True, blank=True)
     ente = models.CharField(max_length=255, null=True, blank=True)
     fecha_registro = models.DateTimeField(auto_now_add=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return f"{self.nombres} {self.apellidos} - {self.operativo}"
