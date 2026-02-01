@@ -2,8 +2,17 @@
   <div class="verificar-container">
     <h1>Verificar Trabajador</h1>
     <div class="verificar-form">
-      <input type="text" v-model="cedula" placeholder="Ingrese la cédula del trabajador" @keyup.enter="verificarCedula"/>
-      <button @click="verificarCedula">Verificar</button>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <label for="origin-select" style="display:flex;align-items:center;gap:6px;">
+          <span style="font-weight:600;">Origen</span>
+          <select id="origin-select" v-model="originSelection" style="padding:6px;border-radius:4px;border:1px solid #ccc;">
+            <option value="V">V - Venezolano</option>
+            <option value="E">E - Extranjero</option>
+          </select>
+        </label>
+        <input type="text" v-model="cedula" placeholder="Ingrese la cédula del trabajador" @keyup.enter="verificarCedula"/>
+        <button @click="verificarCedula">Verificar</button>
+      </div>
     </div>
     <div v-if="loading">Cargando...</div>
     <div v-if="mensaje" class="mensaje" :class="mensajeTipo">{{ mensaje }}</div>
@@ -33,10 +42,21 @@
           <p><strong>Apellidos:</strong> {{ trabajador.apellidos || '-' }}</p>
           <p><strong>Cargo:</strong> {{ trabajador.cargo || '-' }}</p>
           <p><strong>Ente:</strong> {{ trabajador.ente || '-' }}</p>
+          <!-- Origen selector removed from modal (kept at top of page) -->
         </div>
         <div class="modal-actions">
-          <button class="btn-continue" @click="confirmarParticipacion">Continuar</button>
+          <button class="btn-continue" :disabled="!cedulaMatchesOrigin" @click="confirmarParticipacion">Continuar</button>
           <button class="btn-cancel" @click="closeModal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+    <!-- Modal de error simple -->
+    <div v-if="errorModalVisible" class="modal-overlay" @click="errorModalVisible = false">
+      <div class="modal-content" @click.stop>
+        <h2>Trabajador no encontrado</h2>
+        <p>La cédula no coincide con el origen seleccionado.</p>
+        <div class="modal-actions">
+          <button class="btn-cancel" @click="errorModalVisible = false">Aceptar</button>
         </div>
       </div>
     </div>
@@ -57,11 +77,23 @@
               mensajeTipo: '', // 'success', 'error', 'info'
               resultado: null,
               modalVisible: false,
+              errorModalVisible: false,
               operativo: {},
               trabajador: {},
-              authState
+              authState,
+                  alreadyParticipated: false,
+                  lastParticipation: null,
+                  originSelection: 'V'
             };
           },
+              computed: {
+                cedulaMatchesOrigin() {
+                  const ced = String(this.trabajador.cedula || this.cedula || '');
+                  if (!ced) return false;
+                  const first = ced.charAt(0).toUpperCase();
+                  return first === (this.originSelection || '').toUpperCase();
+                }
+              },
           methods: {
             logout() {
               try {
@@ -76,23 +108,72 @@
                 this.resultado = null;
                 return;
               }
+              // Allow numeric cédula input without prefix. If the user
+              // includes a prefix (V/E) ensure it matches the selected origin.
+              const cedCheck = String(this.cedula || '').trim();
+              const hasPrefix = /^[VE]/i.test(cedCheck);
+              if (hasPrefix && cedCheck.charAt(0).toUpperCase() !== (this.originSelection || '').toUpperCase()) {
+                this.mensaje = 'Trabajador no encontrado.';
+                this.mensajeTipo = 'error';
+                this.resultado = null;
+                this.errorModalVisible = true;
+                return;
+              }
               this.loading = true;
               this.mensaje = '';
               this.resultado = null;
               const operativoId = this.$route.params.id;
 
-              axios.get(`http://localhost:8000/api/operativos/${operativoId}/verificar/${this.cedula}`)
+              // Build the request cedula: if user entered numeric without prefix,
+              // prepend the selected origin so backend receives e.g. 'V30551654'.
+              const requestCedula = hasPrefix ? cedCheck : `${(this.originSelection||'V')}${cedCheck}`;
+
+              axios.get(`http://localhost:8000/api/operativos/${operativoId}/verificar/${requestCedula}`)
                 .then(response => {
                   const data = response.data;
+                  // Si existe registro histórico, informar y no abrir modal
+                  if (data.participacion_historica) {
+                    this.alreadyParticipated = true;
+                    this.lastParticipation = data.participacion_historica.history_date || null;
+                    this.trabajador = data.trabajador || {
+                      cedula: this.cedula,
+                      nombres: data.participacion_historica.nombres,
+                      apellidos: data.participacion_historica.apellidos,
+                      cargo: data.participacion_historica.cargo,
+                      ente: data.participacion_historica.ente,
+                      origen: data.participacion_historica.origen || null
+                    };
+                    const origenText = data.participacion_historica.origen ? ` (origen: ${data.participacion_historica.origen})` : '';
+                    this.mensaje = `Esta cédula ya registró participación el ${this.lastParticipation || 'fecha desconocida'}${origenText}.`;
+                    this.mensajeTipo = 'info';
+                    this.modalVisible = false;
+                    return;
+                  }
+
                   if (data.encontrado) {
-                    this.trabajador = data.trabajador || {};
+                    const trabajadorData = data.trabajador || {};
+                    // Si el trabajador encontrado tiene cédula con prefijo, validar
+                    // que coincida con la selección del usuario. Si no coincide,
+                    // mostrar error y NO abrir el modal con datos del operativo.
+                    const ced = String(trabajadorData.cedula || '');
+                    const foundPrefix = /^[VE]/i.test(ced) ? ced.charAt(0).toUpperCase() : null;
+                    if (foundPrefix && foundPrefix !== (this.originSelection || '').toUpperCase()) {
+                      this.mensaje = 'Trabajador no encontrado.';
+                      this.mensajeTipo = 'error';
+                      this.resultado = null;
+                      this.errorModalVisible = true;
+                      return;
+                    }
+
+                    this.trabajador = trabajadorData;
                     // fetch operativo details
                     return axios.get(`http://localhost:8000/api/libro/${operativoId}`)
                       .then(r => {
-                        this.operativo = r.data;
-                        this.modalVisible = true;
-                        this.mensaje = 'Trabajador encontrado. Confirme para registrar.';
-                        this.mensajeTipo = 'info';
+                            this.operativo = r.data;
+                            // NO sobrescribir `originSelection` aquí: conservar la elección del usuario
+                            this.modalVisible = true;
+                            this.mensaje = 'Trabajador encontrado. Confirme para registrar.';
+                            this.mensajeTipo = 'info';
                       });
                   } else {
                     this.mensaje = data.message || 'Trabajador no encontrado.';
@@ -122,6 +203,16 @@
                 cargo: this.trabajador.cargo || '',
                 ente: this.trabajador.ente || ''
               };
+              // Usar origen seleccionado en el modal
+              const origen = (this.originSelection || '').toUpperCase();
+              payload.origen = origen;
+              // Validar coincidencia entre cédula y origen antes de enviar
+              const ced = String(payload.cedula || '');
+              if (!/^[VE]/i.test(ced) || ced.charAt(0).toUpperCase() !== origen) {
+                this.mensaje = `La cédula ${ced} no coincide con el origen seleccionado (${origen}).`;
+                this.mensajeTipo = 'error';
+                return;
+              }
               this.loading = true;
               axios.post(`http://localhost:8000/api/operativos/${operativoId}/guardar-participacion`, payload)
                 .then(response => {

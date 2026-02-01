@@ -58,4 +58,14 @@ python manage.py collectstatic
 # 1) Instalar dependencias (solo la primera vez o si cambian):
 #    cd frontend && npm install
 # 2) Levantar el servidor de desarrollo:
-#    cd frontend && npm run dev
+#    
+
+
+
+
+
+
+
+
+
+
