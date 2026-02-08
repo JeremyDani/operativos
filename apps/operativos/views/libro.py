@@ -1,3 +1,9 @@
+"""API para gestionar `Libro` (operativos).
+
+Incluye endpoints optimizados para lectura que usan `select_related` para
+evitar N+1 queries y devuelve una representación plana adecuada para el
+frontend (incluye `estatus`, `lugar` y `tipo_operativo` como texto).
+"""
 from typing import List
 from ninja import Router
 from apps.operativos.models.libro import Libro
@@ -5,8 +11,10 @@ from apps.operativos.schemes.libro import LibroSchema
 
 router = Router(tags=['libro'])
 
+
 @router.get("/", response=List[LibroSchema])
 def list_libros(request):
+    # Usar select_related para traer las FKs en la misma consulta
     qs = Libro.objects.select_related('estatus', 'lugar', 'tipo_operativo').all()
     response_list = []
     for libro in qs:
@@ -20,12 +28,14 @@ def list_libros(request):
             "publicado": libro.publicado,
             "ilustracion": libro.ilustracion,
             "ilustracion_b64": libro.ilustracion_b64,
+            # Extraer texto de las relaciones foráneas para uso en frontend
             "estatus": libro.estatus.descripcion,
             "lugar": libro.lugar.descripcion,
             "tipo_operativo": libro.tipo_operativo.descripcion,
             "usar_telegram": libro.usar_telegram if libro.usar_telegram is not None else False
         })
     return response_list
+
 
 @router.get("/{libro_id}", response=LibroSchema)
 def get_libro(request, libro_id: int):
@@ -46,10 +56,12 @@ def get_libro(request, libro_id: int):
         "usar_telegram": libro.usar_telegram if libro.usar_telegram is not None else False
     }
 
+
 @router.post("/", response=LibroSchema)
 def create_libro(request, payload: LibroSchema):
     libro = Libro.objects.create(**payload.dict())
     return libro
+
 
 @router.put("/{libro_id}", response=LibroSchema)
 def update_libro(request, libro_id: int, payload: LibroSchema):
@@ -58,6 +70,7 @@ def update_libro(request, libro_id: int, payload: LibroSchema):
         setattr(libro, attr, value)
     libro.save()
     return libro
+
 
 @router.delete("/{libro_id}", response={204: None})
 def delete_libro(request, libro_id: int):

@@ -1,13 +1,15 @@
 from django.db import models
 
+
 class Ente(models.Model):
+    """Modelo que representa un ente/organismo (usado en nóminas y participaciones)."""
     descripcion     = models.CharField('Descripción',   max_length = 100, blank = True, null = True,  unique = True, editable = True)
     estatus         = models.BooleanField('Estatus',    default = True)
     motivo          = models.CharField('Motivo',        max_length = 100, null = True, blank = True)
     
     class Meta:
         managed             = True
-        db_table            = 'auxiliares\".\"ente'
+        db_table            = 'auxiliares"."ente'
         verbose_name        = 'Ente'
         verbose_name_plural = 'Entes'
         

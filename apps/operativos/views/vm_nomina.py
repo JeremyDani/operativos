@@ -1,9 +1,13 @@
+"""Rutas para consultar la vista/materializada `VmNomina` usada como fuente
+de información de nómina central (VM). Provee CRUD básico.
+"""
 from typing import List
 from ninja import Router
 from apps.operativos.models.vm_nomina import VmNomina
 from apps.operativos.schemes.vm_nomina import VmNominaSchema
 
 router = Router(tags=['vm_nomina'])
+
 
 @router.get("/", response=List[VmNominaSchema])
 def list_vm_nomina(request):

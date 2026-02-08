@@ -1,9 +1,12 @@
+"""CRUD para `TipoOperativo` (tipos de operativos).
+"""
 from typing import List
 from ninja import Router
 from apps.auxiliares.models import TipoOperativo
 from apps.auxiliares.schemes import TipoOperativoSchema
 
 router = Router(tags=['tipo_operativo'])
+
 
 @router.get("/", response=List[TipoOperativoSchema])
 def list_tipos_operativo(request):

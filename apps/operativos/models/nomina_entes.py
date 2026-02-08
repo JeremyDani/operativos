@@ -2,7 +2,11 @@ from django.db                                  import models
 
 
 class NominaEntes(models.Model):
-    
+    """Modelo que corresponde a la nómina por entes.
+
+    Contiene la cédula (IntegerField) y metadata del trabajador y del ente.
+    Usado como fuente alterna a `VmNomina` para verificar trabajadores.
+    """
     VENEZOLANO = 'V'
     EXTRANJERO = 'E'
     
@@ -31,7 +35,9 @@ class NominaEntes(models.Model):
 
     class Meta:
         managed             = True
-        db_table            = 'operativos\".\"nominaentes'
+        # El `db_table` incluye esquema; la cadena contiene comillas
+        # para mapear a la tabla `operativos.nominaentes` en la base de datos.
+        db_table            = 'operativos"."nominaentes'
         verbose_name        = 'Nomina Ente'
         verbose_name_plural = 'Nominas Entes'
         

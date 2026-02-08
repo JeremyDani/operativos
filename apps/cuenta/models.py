@@ -1,3 +1,10 @@
+"""Modelo de usuario personalizado para la app `cuenta`.
+
+Este módulo define `UserManager` y `User`, un modelo que extiende
+`AbstractBaseUser` para adaptarse a la lógica de la aplicación (uso de
+`origen` + `cedula` como identificador único). Se diseñó para permitir
+credenciales tipo `username` y para almacenar preguntas de recuperación.
+"""
 from django.db                          import models
 from django.contrib.auth.models         import (AbstractBaseUser, BaseUserManager, PermissionsMixin)
 from simple_history.models              import HistoricalRecords
@@ -6,6 +13,11 @@ from simple_history.models              import HistoricalRecords
 class UserManager(BaseUserManager):
 
     def create_user(self, username, email, origen, cedula, nombre_apellido, password = None):
+        """Crea y devuelve un usuario normal.
+
+        Nota: `email` se normaliza; la contraseña se guarda usando
+        `set_password` para aplicar hashing.
+        """
         user = self.model(
                             username        = username,
                             email           = self.normalize_email(email),
@@ -26,6 +38,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    # Prefijos de origen posibles (Venezolano / Extranjero)
     V    =   'V'
     E    =   'E'
 
@@ -34,29 +47,30 @@ class User(AbstractBaseUser, PermissionsMixin):
                     (E,  'E'),
                 )
 
-    username                = models.CharField('Usuario',                   max_length =  20,   unique = True,                              )
-    email                   = models.EmailField('Correo',                   max_length = 255,   unique = True                               )
-    origen                  = models.CharField('Origen',                    max_length =   1,   choices = ORIGEN                            )
-    cedula                  = models.IntegerField('Cédula',                                                                                 )
-    nombre_apellido         = models.CharField('Nom/Ape',                   max_length = 255,   blank = True, null = True                   )
-    pregunta_01             = models.CharField('Preg. 01',                  max_length = 255,   default = 'INDETERMINADA'                   )
-    pregunta_02             = models.CharField('Preg. 02',                  max_length = 255,   default = 'INDETERMINADA'                   )
-    pregunta_03             = models.CharField('Preg. 03',                  max_length = 255,   default = 'INDETERMINADA'                   )
-    respuesta_01            = models.CharField('Resp. 01',                  max_length = 255,   default = 'INDETERMINADA'                   )
-    respuesta_02            = models.CharField('Resp. 02',                  max_length = 255,   default = 'INDETERMINADA'                   )
-    respuesta_03            = models.CharField('Resp. 03',                  max_length = 255,   default = 'INDETERMINADA'                   )
-    fecha_registro          = models.DateTimeField('Fecha Registro',        auto_now_add = True                                             )
-    fecha_actualizacion     = models.DateTimeField('Fecha Actualización',   auto_now     = True                                                 )
-    is_verified             = models.BooleanField('VERIFICADO',                                 default = True                             )
-    is_active               = models.BooleanField('ACTIVO',                                     default = True                             )
-    is_staff                = models.BooleanField('STAFF',                                      default = False                            )
-    is_superuser            = models.BooleanField('ROOT',                                       default = False                            )
+    username                = models.CharField('Usuario',                   max_length =  20,   unique = True)
+    email                   = models.EmailField('Correo',                   max_length = 255,   unique = True)
+    origen                  = models.CharField('Origen',                    max_length =   1,   choices = ORIGEN)
+    cedula                  = models.IntegerField('Cédula')
+    nombre_apellido         = models.CharField('Nom/Ape',                   max_length = 255,   blank = True, null = True)
+    pregunta_01             = models.CharField('Preg. 01',                  max_length = 255,   default = 'INDETERMINADA')
+    pregunta_02             = models.CharField('Preg. 02',                  max_length = 255,   default = 'INDETERMINADA')
+    pregunta_03             = models.CharField('Preg. 03',                  max_length = 255,   default = 'INDETERMINADA')
+    respuesta_01            = models.CharField('Resp. 01',                  max_length = 255,   default = 'INDETERMINADA')
+    respuesta_02            = models.CharField('Resp. 02',                  max_length = 255,   default = 'INDETERMINADA')
+    respuesta_03            = models.CharField('Resp. 03',                  max_length = 255,   default = 'INDETERMINADA')
+    fecha_registro          = models.DateTimeField('Fecha Registro',        auto_now_add = True)
+    fecha_actualizacion     = models.DateTimeField('Fecha Actualización',   auto_now     = True)
+    is_verified             = models.BooleanField('VERIFICADO',                                 default = True)
+    is_active               = models.BooleanField('ACTIVO',                                     default = True)
+    is_staff                = models.BooleanField('STAFF',                                      default = False)
+    is_superuser            = models.BooleanField('ROOT',                                       default = False)
     #historical              = HistoricalRecords()
     objects                 = UserManager()
 
     class Meta:
         managed             = True
-        db_table            = 'cuenta\".\"usuario'
+        # `db_table` mapea al esquema `cuenta` en la base de datos
+        db_table            = 'cuenta"."usuario'
         verbose_name        = 'Usuario'
         verbose_name_plural = 'Usuarios'
         unique_together     = ('origen','cedula')
@@ -65,11 +79,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['origen','cedula','nombre_apellido','email']
 
     def save(self, *args, **kwargs):
-            self.identificador = self.origen+str(self.cedula)
-            super(User, self).save(*args, **kwargs)
+        """Asegura el campo `identificador` compuesto antes de persistir."""
+        self.identificador = self.origen + str(self.cedula)
+        super(User, self).save(*args, **kwargs)
     
     def __str__(self):
-        #return self.username
         return f'{self.origen}-{self.cedula} {self.nombre_apellido}'
-    
-    
+

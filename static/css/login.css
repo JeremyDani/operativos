@@ -1,0 +1,108 @@
+/* Styles para página de login similar al diseño solicitado */
+:root{
+  --primary:#0d6efd;
+  --card-bg: #ffffffcc;
+  --muted:#6c757d;
+}
+
+html,body{
+  height:100%;
+  font-family: 'Source Sans Pro', system-ui, -apple-system, "Segoe UI", Roboto, 'Helvetica Neue', Arial;
+}
+
+body.jazzmin-login-page{
+  background-image: url('/static/img/fondo.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+.login-wrapper{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:2rem;
+  padding:3rem;
+}
+
+.login-left{
+  flex:0 0 44%;
+  max-width:640px;
+}
+
+.login-card .card{
+  border-radius:8px;
+  box-shadow:0 8px 30px rgba(15,23,42,0.12);
+  overflow:visible;
+  background:var(--card-bg);
+}
+
+.login-logo picture img{
+  max-width:280px;
+  display:block;
+  margin:0 auto 1rem auto;
+}
+
+.card-body{padding:2rem}
+
+/* Inputs y botones */
+.card-body .form-control{
+  border-radius:6px;
+  border:1px solid #e3e6ea;
+  padding:0.75rem 0.9rem;
+}
+
+.card-body .btn-primary{
+  background:var(--primary);
+  border:none;
+  padding:0.7rem 1.2rem;
+  border-radius:6px;
+  box-shadow:0 6px 18px rgba(13,110,253,0.14);
+}
+
+.login-right{
+  flex:1 1 46%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:1.5rem;
+  padding:2rem;
+  max-width:760px;
+}
+
+.brand-logo{
+  max-width:320px;
+  height:auto;
+  filter: drop-shadow(0 8px 20px rgba(0,0,0,0.08));
+}
+
+.brand-text h2{
+  margin:0;
+  font-size:1.8rem;
+  color:#222;
+  font-weight:700;
+}
+
+.brand-text p{
+  margin:0.25rem 0 0 0;
+  color:var(--muted);
+  font-size:1.05rem;
+}
+
+/* Responsive */
+@media (max-width:900px){
+  .login-wrapper{flex-direction:column;padding:2rem}
+  .login-left,.login-right{flex:1 1 100%;max-width:720px}
+  .brand{justify-content:center;text-align:center;flex-direction:column}
+  .brand-logo{max-width:220px}
+}
+
+/* Small animations */
+.form-control:focus{box-shadow:0 6px 18px rgba(13,110,253,0.12);border-color:var(--primary)}
+.btn-primary:active{transform:translateY(1px)}

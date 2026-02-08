@@ -45,28 +45,45 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     {% endif %}
 
+    <!-- Custom login styles -->
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
     {% block extrastyle %} {% endblock %}
     {% block extrahead %} {% endblock %}
 </head>
 <body class="hold-transition jazzmin-login-page">
 
-<div class="login-box">
-    <div class="login-logo">
-        <h1>
-            <picture>
-                <source
-                    srcset="{% static jazzmin_settings.login_logo_dark %}"
-                    media="(prefers-color-scheme: dark)">
-                 <img src="{% static jazzmin_settings.login_logo %}" alt="{{ jazzmin_settings.site_header }}">
-            </picture>
-        </h1>
-    </div>
+<div class="login-wrapper">
+    <div class="login-left">
+        <div class="login-card">
+            <div class="login-logo">
+                <h1>
+                    <picture>
+                        <source
+                            srcset="{% static jazzmin_settings.login_logo_dark %}"
+                            media="(prefers-color-scheme: dark)">
+                         <img src="{% static jazzmin_settings.login_logo %}" alt="{{ jazzmin_settings.site_header }}">
+                    </picture>
+                </h1>
+            </div>
 
-    <div class="card">
-        <div class="card-body">
-            {% block content %} {% endblock %}
+            <div class="card">
+                <div class="card-body">
+                    {% block content %} {% endblock %}
+                </div>
+            </div>
         </div>
     </div>
+
+    <div class="login-right">
+        <div class="brand">
+            <img src="{% static 'img/logomppe.png' %}" alt="Gobierno Bolivariano de Venezuela" class="brand-logo">
+            <div class="brand-text">
+                <h2>Gobierno Bolivariano de Venezuela</h2>
+                <p>Ministerio del Poder Popular para la Educación</p>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <!-- jQuery -->
@@ -76,19 +93,12 @@
 <!-- AdminLTE App -->
 <script src="{% static 'vendor/adminlte/js/adminlte.min.js' %}"></script>
 
+<!-- Login page script -->
+<script src="{% static 'js/login.js' %}"></script>
+
 {% if jazzmin_settings.custom_js %}
     <script src="{% static jazzmin_settings.custom_js %}"></script>
 {% endif %}
 
 </body>
 </html>
-
-<style>
-    body
-    {
-        background-image: url('/static/img/fondo.jpg');
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        background-size: cover;
-    }
-</style>

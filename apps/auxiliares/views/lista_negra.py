@@ -1,9 +1,14 @@
+"""API para administrar la lista negra (CRUD).
+
+Los endpoints permiten listar, crear, actualizar y eliminar entradas.
+"""
 from typing import List
 from ninja import Router
 from apps.auxiliares.models import Lista_Negra
 from apps.auxiliares.schemes import ListaNegraSchema
 
 router = Router(tags=['lista_negra'])
+
 
 @router.get("/", response=List[ListaNegraSchema])
 def list_lista_negra(request):

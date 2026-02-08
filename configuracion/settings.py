@@ -9,9 +9,13 @@ import logging.config
 import os
 
 
+# Directorio base del proyecto (usado para construir rutas relativas)
 BASE_DIR            = Path(__file__).resolve().parent.parent
+# Clave secreta (leer desde .env). NO versionar valores reales.
 SECRET_KEY          = config('SECRET_KEY')
+# Flag de depuración; controlar en el entorno (True/False)
 DEBUG               = config('DEBUG')
+# Hosts permitidos para servir la app
 ALLOWED_HOSTS   = ['localhost', '127.0.0.1', '0.0.0.0']
 
 BASE_APPS   =   [
@@ -44,6 +48,7 @@ THIRD_APPS =    [
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
 
+# Lista combinada de apps instaladas: core de Django + apps locales + terceros
 
 MIDDLEWARE      =   [
                         'django.middleware.security.SecurityMiddleware',
@@ -58,7 +63,7 @@ MIDDLEWARE      =   [
                         #'maintenance_mode.middleware.MaintenanceModeMiddleware',
                     ]
 
-ROOT_URLCONF    =   'configuracion.urls'
+ROOT_URLCONF    =   'configuracion.urls'  # Módulo de rutas raíz del proyecto
 
 TEMPLATES       =   [
                         {
@@ -77,7 +82,7 @@ TEMPLATES       =   [
                         },
                     ]
 
-WSGI_APPLICATION = 'configuracion.wsgi.application'
+WSGI_APPLICATION = 'configuracion.wsgi.application'  # Entrada WSGI para servidores de producción
 
 
 DATABASES = {
@@ -124,12 +129,14 @@ MEDIA_URL           = '/media/'
 
 
 
-CORS_ALLOW_ALL_ORIGINS          =   True
-'''
-CORS_ALLOWED_ORIGINS =  [
-                            "https://example.com",
-                        ]
-'''
+# En desarrollo usar orígenes explícitos cuando `withCredentials` está activado.
+# No usar wildcard '*' junto con credenciales.
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
+# Permitir que Django incluya cookies de sesión en respuestas CORS
+CORS_ALLOW_CREDENTIALS = True
 AUTH_USER_MODEL     = 'cuenta.User'
 
 DATABASE_ROUTERS    =   (

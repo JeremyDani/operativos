@@ -1,9 +1,14 @@
+"""Rutas para gestionar excepciones/errores de negocio almacenadas.
+
+Provee operaciones CRUD para la tabla `Excepcion`.
+"""
 from typing import List
 from ninja import Router
 from apps.auxiliares.models import Excepcion
 from apps.auxiliares.schemes import ExcepcionSchema
 
 router = Router(tags=['excepcion'])
+
 
 @router.get("/", response=List[ExcepcionSchema])
 def list_excepciones(request):

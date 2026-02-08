@@ -6,6 +6,13 @@ from simple_history.models                      import HistoricalRecords
 
 
 class Libro(models.Model):
+    """Modelo principal que representa un operativo (libro).
+
+    Campos clave:
+    - `titulo`, `descripcion`, `fecha_inicio`, `fecha_fin` -> metadatos del operativo
+    - `estatus`, `lugar`, `tipo_operativo` -> FK a tablas auxiliares
+    - `history` -> registro histórico (simple_history) para auditoría
+    """
     titulo              = models.CharField('titulo', max_length=100, blank=True, null=True)
     descripcion         = models.TextField()
     fecha_inicio        = models.DateTimeField()
@@ -20,6 +27,7 @@ class Libro(models.Model):
     usar_telegram       = models.BooleanField('usar_telegram',blank=True, null=True)
     verificado          = models.BooleanField(default=False)
 
+    # Registro histórico de cambios usando `simple_history`
     history = HistoricalRecords(table_name='libro_history')
 
     class Meta:

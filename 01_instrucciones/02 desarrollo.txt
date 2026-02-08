@@ -54,11 +54,33 @@ pip install -U --no-deps flask
 python manage.py collectstatic 
 
 ## INICIAR FRONTEND (Vite + Vue)
-# Desde la raíz del proyecto ejecutar:
-# 1) Instalar dependencias (solo la primera vez o si cambian):
-#    cd frontend && npm install
-# 2) Levantar el servidor de desarrollo:
-#    
+Desde la raíz del proyecto:
+
+1) Instalar Node.js (recomendado Node 18+).
+
+2) Entrar al directorio `frontend` e instalar dependencias (solo la primera vez o si cambian):
+
+	cd frontend
+	npm install
+
+	(También puedes usar `yarn` si prefieres: `yarn install`)
+
+3) Levantar el servidor de desarrollo (Vite):
+
+	npm run dev
+
+4) Construir para producción y previsualizar / servir:
+
+	npm run build
+	npm run preview    # previsualiza el build con Vite
+
+	# Alternativa para servir la carpeta `dist`:
+	npm install -g serve
+	serve -s dist
+
+Notas:
+- Asegúrate de estar en el directorio del proyecto antes de ejecutar `cd frontend`.
+- Si usas `pnpm` u otro gestor, reemplaza los comandos según corresponda.
 
 
 

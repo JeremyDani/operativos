@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Limpiar localStorage</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+  </head>
+  <body>
+    <h2>Limpiando localStorage...</h2>
+    <p id="status">Procesando...</p>
+    <script>
+      try {
+        localStorage.removeItem('pinia');
+        // También eliminar cualquier clave relacionada si se usó otro nombre
+        // localStorage.removeItem('pinia-plugin-persistedstate');
+        document.getElementById('status').innerText = 'LocalStorage limpiado. Redirigiendo a /login...';
+        setTimeout(() => { window.location.href = '/login'; }, 900);
+      } catch (e) {
+        document.getElementById('status').innerText = 'Error al limpiar localStorage: ' + e;
+      }
+    </script>
+  </body>
+</html>

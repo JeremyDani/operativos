@@ -15,10 +15,17 @@ from apps.cuenta.schemes.token  import CreateUserSchema, ChangePasswordSchema, C
 router = Router()
 tag = ['Auth']
 
+
 @api_controller("/auth", tags=tag, auth=JWTAuth())
 class CreateUserController:
     @route.post("/create", response = {201: SucessSchema, 404: ErrorSchema}, url_name = "user-create", auth = None)
     def create_user(self, user_schema: CreateUserSchema):
+        """Controller para crear usuarios desde la API.
+
+        `auth=None` permite que usuarios sin token creen cuenta (registro público).
+        Se valida con los esquemas y se captura ValidationError para convertirlo
+        en errores comprensibles por Ninja.
+        """
         try:
             user    = user_schema.create()
             return 201, {"message": "Operacion Exitosa"}
@@ -33,18 +40,21 @@ class CreateUserController:
 
 @api_controller('/auth', tags=tag)
 class MyTokenObtainPairController(TokenObtainPairController):
+    # Endpoint para obtener token (implementa la lógica de `ninja_jwt`)
     @route.post("/login", response=MyTokenObtainPairOutSchema, url_name="token_obtain_pair")
     def obtain_token(self, user_token: MyTokenObtainPairSchema):
         return user_token.output_schema()
     
     @route.post("/refresh", response = schema.TokenRefreshOutputSchema, url_name = "refresh")
     def refresh_token(self, refresh_token: schema.TokenObtainPairOutputSchema):
+        # Refrescar token usando el esquema proporcionado por `ninja_jwt`
         refresh = schema.TokenRefreshOutputSchema(**refresh_token.dict())
         return refresh
 
 
 @router.post('/change-password', tags=tag, response = {200: SucessSchema, 400: ErrorSchema})
 def change_password(request, payload: ChangePasswordSchema):
+    # Cambia la contraseña de un usuario autenticado (se espera user_id en payload)
     user_id         = payload.user_id
     old_password    = payload.old_password
     new_password    = payload.new_password
@@ -59,10 +69,9 @@ def change_password(request, payload: ChangePasswordSchema):
         return 400, {"message": "Operación Fallida"}
 
 
-#@router.put('/change-email/{int:id}/', tags=tag, response={200: SucessSchema, 404: SchemaError}, auth=ip_whitelist) # Restriccion por IP
-#@router.put('/change-email/{int:id}/', tags=tag, response={200: SucessSchema, 404: SchemaError}, auth=JWTAuth)  # Solicitud de Autorizacion
 @router.put('/change-email/{id}/', tags=tag, response={200: SucessSchema, 404: ErrorSchema})
 def change_email(request, id: int, payload: ChangeEmailSchema):
+    # Actualiza el email de un usuario identificado por `id`
     try:
         model = Model.objects.get(id=id)
         
@@ -75,10 +84,9 @@ def change_email(request, id: int, payload: ChangeEmailSchema):
         return 404, {"message": "Operación Fallida"}
     
 
-#@router.put('/change-email/{int:id}/', tags=tag, response={200: SucessSchema, 404: SchemaError}, auth=ip_whitelist) # Restriccion por IP
-#@router.put('/change-email/{int:id}/', tags=tag, response={200: SucessSchema, 404: SchemaError}, auth=JWTAuth)  # Solicitud de Autorizacion
 @router.put('/change-question-answer/{id}/', tags=tag, response={200: SucessSchema, 404: ErrorSchema})
 def change_question_and_answer(request, id: int, payload: ChangeQASchema):
+    # Cambia la pregunta/respuesta de seguridad del usuario
     try:
         model = Model.objects.get(id=id)
         

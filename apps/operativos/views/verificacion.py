@@ -4,8 +4,14 @@ from apps.operativos.models.nomina_entes import NominaEntes
 
 router = Router(tags=['verificacion'])
 
+
 @router.get("/verificar/{cedula}")
 def verificar_cedula(request, cedula: int):
+    """Verifica de forma rápida si una cédula existe en VmNomina o NominaEntes.
+
+    Devuelve banderas booleanas indicando en qué fuente fue encontrada.
+    Se usa por ejemplo para búsquedas rápidas desde el frontend.
+    """
     encontrado_en_vm_nomina = VmNomina.objects.filter(cedula=cedula).exists()
     encontrado_en_nomina_entes = NominaEntes.objects.filter(cedula=cedula).exists()
 

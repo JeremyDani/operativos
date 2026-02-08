@@ -1,17 +1,29 @@
 <template>
+  <!-- Pantalla para verificar la cédula de un trabajador y registrar su participación -->
   <div class="verificar-container">
-    <h1>Verificar Trabajador</h1>
+    <h1>Demostrador</h1>
     <div class="verificar-form">
-      <div style="display:flex;align-items:center;gap:8px;">
-        <label for="origin-select" style="display:flex;align-items:center;gap:6px;">
-          <span style="font-weight:600;">Origen</span>
-          <select id="origin-select" v-model="originSelection" style="padding:6px;border-radius:4px;border:1px solid #ccc;">
-            <option value="V">V - Venezolano</option>
-            <option value="E">E - Extranjero</option>
+      <div class="input-row">
+        <label for="origin-select" class="origin-label">
+          <span>Origen</span>
+          <!-- Selección de prefijo V/E que se antepone a la cédula si el usuario no lo ingresa -->
+          <select id="origin-select" v-model="originSelection" class="origin-select">
+            <option value="V">V</option>
+            <option value="E">E</option>
           </select>
         </label>
-        <input type="text" v-model="cedula" placeholder="Ingrese la cédula del trabajador" @keyup.enter="verificarCedula"/>
-        <button @click="verificarCedula">Verificar</button>
+        <!-- Input de cédula; Enter y botón llaman a `verificarCedula()` -->
+        <input class="cedula-input" type="text" v-model="cedula" placeholder="Número de Cédula" @keyup.enter="verificarCedula"/>
+      </div>
+
+      <!-- Botón grande estilo barra verde de la captura -->
+      <div class="verify-bar">
+        <button class="big-verify" @click="verificarCedula">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right:8px;">
+            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.85-3.85zm-5.242 0a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+          </svg>
+          Verificar
+        </button>
       </div>
     </div>
     <div v-if="loading">Cargando...</div>
@@ -24,28 +36,23 @@
       <p><strong>Dependencia:</strong> {{ resultado.dependencia }}</p>
     </div>
 
-    <!-- Modal: muestra datos del operativo y datos de la nómina -->
+    <!-- Modal: muestra datos del operativo y datos de la nómina para confirmar participación -->
     <div v-if="modalVisible" class="modal-overlay" @click="closeModal">
       <div class="modal-content" @click.stop>
-        <h2>Confirmar Participación</h2>
-        <div class="modal-section">
-          <h3>Operativo</h3>
-          <p><strong>Título:</strong> {{ operativo.titulo }}</p>
-          <p><strong>Lugar:</strong> {{ operativo.lugar }}</p>
-          <p><strong>Estatus:</strong> {{ operativo.estatus }}</p>
-          <p><strong>Fecha inicio:</strong> {{ formatoFecha(operativo.fecha_inicio) }}</p>
+        <div class="modal-header">
+          <h2>Datos del demostrador</h2>
         </div>
-        <div class="modal-section">
-          <h3>Trabajador (Nómina)</h3>
-          <p><strong>Cédula:</strong> {{ trabajador.cedula }}</p>
-          <p><strong>Nombre:</strong> {{ trabajador.nombres }}</p>
-          <p><strong>Apellidos:</strong> {{ trabajador.apellidos || '-' }}</p>
-          <p><strong>Cargo:</strong> {{ trabajador.cargo || '-' }}</p>
-          <p><strong>Ente:</strong> {{ trabajador.ente || '-' }}</p>
-          <!-- Origen selector removed from modal (kept at top of page) -->
+
+        <div class="modal-body info-grid">
+          <div class="row"><span class="key">Ente:</span><span class="val">{{ trabajador.ente || '-' }}</span></div>
+          <div class="row"><span class="key">Origen y Cédula:</span><span class="val">{{ trabajador.cedula || (originSelection + cedula) }}</span></div>
+          <div class="row"><span class="key">Nombre y Apellido:</span><span class="val">{{ (trabajador.nombres || '-') + (trabajador.apellidos ? (' ' + trabajador.apellidos) : '') }}</span></div>
+          <div class="row"><span class="key">Entidad:</span><span class="val">{{ trabajador.entidad || '-' }}</span></div>
+          <div class="row"><span class="key">Cargo:</span><span class="val">{{ trabajador.cargo || trabajador.clasificacion || '-' }}</span></div>
         </div>
-        <div class="modal-actions">
-          <button class="btn-continue" :disabled="!cedulaMatchesOrigin" @click="confirmarParticipacion">Continuar</button>
+
+        <div class="modal-actions split">
+          <button class="btn-confirm" :disabled="!cedulaMatchesOrigin" @click="confirmarParticipacion">Confirmar</button>
           <button class="btn-cancel" @click="closeModal">Cancelar</button>
         </div>
       </div>
@@ -54,7 +61,6 @@
     <div v-if="errorModalVisible" class="modal-overlay" @click="errorModalVisible = false">
       <div class="modal-content" @click.stop>
         <h2>Trabajador no encontrado</h2>
-        <p>La cédula no coincide con el origen seleccionado.</p>
         <div class="modal-actions">
           <button class="btn-cancel" @click="errorModalVisible = false">Aceptar</button>
         </div>
@@ -93,6 +99,8 @@
                   const first = ced.charAt(0).toUpperCase();
                   return first === (this.originSelection || '').toUpperCase();
                 }
+
+                
               },
           methods: {
             logout() {
@@ -128,7 +136,7 @@
               // prepend the selected origin so backend receives e.g. 'V30551654'.
               const requestCedula = hasPrefix ? cedCheck : `${(this.originSelection||'V')}${cedCheck}`;
 
-              axios.get(`http://localhost:8000/api/operativos/${operativoId}/verificar/${requestCedula}`)
+              axios.get(`/api/operativos/${operativoId}/verificar/${requestCedula}`)
                 .then(response => {
                   const data = response.data;
                   // Si existe registro histórico, informar y no abrir modal
@@ -143,8 +151,8 @@
                       ente: data.participacion_historica.ente,
                       origen: data.participacion_historica.origen || null
                     };
-                    const origenText = data.participacion_historica.origen ? ` (origen: ${data.participacion_historica.origen})` : '';
-                    this.mensaje = `Esta cédula ya registró participación el ${this.lastParticipation || 'fecha desconocida'}${origenText}.`;
+                    // Mostrar mensaje simplificado indicando participación reciente
+                    this.mensaje = 'Este usuario participo recientemente en el operativo';
                     this.mensajeTipo = 'info';
                     this.modalVisible = false;
                     return;
@@ -167,7 +175,7 @@
 
                     this.trabajador = trabajadorData;
                     // fetch operativo details
-                    return axios.get(`http://localhost:8000/api/libro/${operativoId}`)
+                    return axios.get(`/api/libro/${operativoId}`)
                       .then(r => {
                             this.operativo = r.data;
                             // NO sobrescribir `originSelection` aquí: conservar la elección del usuario
@@ -214,9 +222,11 @@
                 return;
               }
               this.loading = true;
-              axios.post(`http://localhost:8000/api/operativos/${operativoId}/guardar-participacion`, payload)
+              axios.post(`/api/operativos/${operativoId}/guardar-participacion`, payload)
                 .then(response => {
-                  this.mensaje = response.data.message || 'Participación registrada.';
+                  // Mostrar mensaje corto y consistente en frontend,
+                  // ignorando detalles extensos que pueda devolver el backend.
+                  this.mensaje = 'Participacion registrada';
                   this.mensajeTipo = 'success';
                   this.modalVisible = false;
                   this.resultado = this.trabajador;
@@ -229,6 +239,7 @@
                   this.loading = false;
                 });
             },
+            
             closeModal() {
               this.modalVisible = false;
             },
@@ -252,26 +263,17 @@
         }
         .verificar-form {
           margin-top: 20px;
-          display: flex;
+          display: block;
           gap: 10px;
         }
-        .verificar-form input {
-          flex-grow: 1;
-          padding: 10px;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-        }
-        .verificar-form button {
-          padding: 10px 20px;
-          background-color: #28a745;
-          color: white;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-        }
-        .verificar-form button:hover {
-          background-color: #218838;
-        }
+        .input-row{display:flex;align-items:center;gap:8px}
+        .origin-label{display:flex;align-items:center;gap:6px;font-weight:600}
+        .origin-select{padding:8px;border-radius:6px;border:1px solid #dcdcdc;background:#fff}
+        .cedula-input{flex:1;padding:12px;border-radius:6px;border:1px solid #dcdcdc}
+
+        .verify-bar{margin-top:12px}
+        .big-verify{width:100%;display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;background:#27ae60;color:#fff;border:none;border-radius:6px;font-weight:600;cursor:pointer;box-shadow:0 6px 18px rgba(39,174,96,0.14)}
+        .big-verify:hover{background:#219150}
         .resultado-panel {
           margin-top: 20px;
           padding: 15px;
@@ -316,7 +318,17 @@
         }
         .modal-section { margin-bottom: 12px; }
         .modal-actions { display:flex; gap:10px; justify-content:flex-end; }
-        .btn-continue { background:#007bff; color:#fff; padding:8px 14px; border:none; border-radius:4px; cursor:pointer }
-        .btn-cancel { background:#6c757d; color:#fff; padding:8px 14px; border:none; border-radius:4px; cursor:pointer }
+        .modal-header{padding:12px 16px;border-bottom:1px solid #eee}
+        .modal-header h2{margin:0;font-size:1.1rem}
+        .modal-body.info-grid{padding:16px 18px;background:#fafafa}
+        .info-grid .row{display:flex;padding:8px 0;border-bottom:1px solid #f0f0f0}
+        .info-grid .key{flex:0 0 220px;color:#666;font-weight:600}
+        .info-grid .val{flex:1;color:#222}
+
+        .modal-actions { display:flex; gap:12px; padding:16px; }
+        .modal-actions.split{justify-content:space-between}
+        .btn-confirm { background:#27ae60; color:#fff; padding:10px 18px; border:none; border-radius:6px; cursor:pointer; flex:1 }
+        .btn-confirm:disabled{opacity:0.6;cursor:not-allowed}
+         .btn-cancel { background:#f39c12; color:#fff; padding:10px 18px; border:none; border-radius:6px; cursor:pointer; flex:1 }
         /* Logout button removed */
         </style>

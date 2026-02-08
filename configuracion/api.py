@@ -18,7 +18,10 @@ from apps.operativos.views.vm_nomina import router as vm_nomina_router
 
 from apps.operativos.views.verificacion import router as verificacion_router
 from apps.operativos.views.participacion import router as participacion_router
+from apps.historico.views.api_reportes import router as historico_reportes_router
 
+# Punto de montaje de la API basada en Ninja (ninja_extra). Aquí se registran
+# los routers de cada app y los controladores (p. ej. para token/password reset).
 api = NinjaExtraAPI(
                         title           = "Plantilla",
                         description     = "API para Plantillas",
@@ -40,20 +43,21 @@ api.add_router("/nomina-entes/",         nomina_entes_router)
 api.add_router("/vm-nomina/",            vm_nomina_router)
 api.add_router("/verificacion/",         verificacion_router)
 api.add_router("/operativos/",           participacion_router)
+api.add_router("/historico/",            historico_reportes_router)
 
 api.register_controllers(ResetPasswordController)
 api.register_controllers(MyTokenObtainPairController)
 api.register_controllers(CreateUserController)
 
 
-# Manejador de excepciones global para ValidationError
+# Manejador de excepciones global para ValidationError: formatea errores de validación
 @api.exception_handler(NinjaValidationError)
 def validation_error_handler(request, exc):
     
-    # Extraer el último elemento de cada ubicación (loc), que debería ser el campo problemático
+    # Extraer el último elemento de cada ubicación (loc), que suele ser el nombre del campo problemático
     property = [error["loc"][-1] for error in exc.errors]  # Extrae el último elemento de 'loc'
 
-    # Devolver los campos en la respuesta
+    # Devolver los campos en la respuesta junto con un mensaje y timestamp
     return api.create_response(
         request,
         {

@@ -1,9 +1,14 @@
+"""CRUD de `Lugar` (tabla auxiliar de lugares).
+
+Rutas disponibles: GET /, GET /{id}, POST /, PUT /{id}, DELETE /{id}.
+"""
 from typing import List
 from ninja import Router
 from apps.auxiliares.models import Lugar
 from apps.auxiliares.schemes import LugarSchema
 
 router = Router(tags=['lugar'])
+
 
 @router.get("/", response=List[LugarSchema])
 def list_lugares(request):

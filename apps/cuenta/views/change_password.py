@@ -1,3 +1,9 @@
+"""Endpoint para cambio de contraseña via API.
+
+Este handler espera un `ChangePasswordSchema` en el payload. El código
+parsea el payload (actual implementación usa `str(payload).split(' ')`) y
+valida la contraseña antigua antes de setear la nueva.
+"""
 from ninja                      import Router
 from apps.cuenta.schemes.token  import ChangePasswordSchema
 from configuracion.schemes      import SucessSchema, ErrorSchema
@@ -6,8 +12,13 @@ from apps.cuenta.models         import User as Model
 
 router = Router()
 
+
 @router.post('/change-password', tags=['Cuenta'], response = {200: SucessSchema, 400: ErrorSchema})
 def change_password(request, payload: ChangePasswordSchema):
+    # Nota: la extracción de valores desde `payload` en este archivo es poco
+    # convencional (parsing de la representación string). Considerar usar
+    # `payload.user_id`, `payload.old_password`, `payload.new_password` si el
+    # esquema lo define explícitamente.
     test = str(payload) 
     posicion_01, posicion_02, posicion_03 = test.split(' ')
 

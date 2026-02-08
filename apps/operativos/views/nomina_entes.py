@@ -1,9 +1,14 @@
+"""CRUD sobre `NominaEntes` — fuente alternativa de nómina por entes.
+
+Provee list/get/create/update/delete para la entidad.
+"""
 from typing import List
 from ninja import Router
 from apps.operativos.models.nomina_entes import NominaEntes
 from apps.operativos.schemes.nomina_entes import NominaEntesSchema
 
 router = Router(tags=['nomina_entes'])
+
 
 @router.get("/", response=List[NominaEntesSchema])
 def list_nomina_entes(request):

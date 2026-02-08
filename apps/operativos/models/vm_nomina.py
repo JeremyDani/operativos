@@ -1,7 +1,13 @@
 from django.db import models
 
 class VmNomina(models.Model):
-    #id = models.IntegerField('id',blank=True, null=True)
+    """Modelo que representa la vista/tabla `vm_nomina` del esquema `operativos`.
+
+    Campos relevantes:
+    - `origen`: prefijo V/E
+    - `cedula`: número de cédula (IntegerField)
+    - `nombre_apellido`: nombre completo
+    """
     VENEZOLANO = 'V'
     EXTRANJERO = 'E'
     
@@ -18,6 +24,7 @@ class VmNomina(models.Model):
         blank=True,
         null=True
     )
+    # Atención: cedula guardada como entero en esta vista
     cedula = models.IntegerField('cedula',blank=True, null=True)
     nombre_apellido = models.TextField('nombre_apellido',blank=True, null=True)
     estado_civil = models.CharField('estado_civil',blank=True, null=True)
@@ -38,8 +45,9 @@ class VmNomina(models.Model):
 
     class Meta:
         managed             = True
-        db_table            = 'operativos\".\"vm_nomina'
-        verbose_name        = 'Vm Nonina'
+        # Mapea la vista/materializada `vm_nomina` dentro del esquema
+        # `operativos`. La cadena `db_table` incluye el esquema.
+        db_table            = 'operativos"."vm_nomina'
+        verbose_name        = 'Vm Nomina'
         verbose_name_plural = 'Vm Nominas'
         
-           

@@ -1,9 +1,14 @@
+"""Endpoints para administrar `EstatusOperativo`.
+
+Incluye list/get/create/update/delete. Se usa como FK en `Libro`.
+"""
 from typing import List
 from ninja import Router
 from apps.auxiliares.models import EstatusOperativo
 from apps.auxiliares.schemes import EstatusOperativoSchema
 
 router = Router(tags=['estatus_operativo'])
+
 
 @router.get("/", response=List[EstatusOperativoSchema])
 def list_estatus_operativo(request):

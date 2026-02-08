@@ -1,3 +1,7 @@
+"""Re-export de modelos auxiliares para facilitar importaciones.
+
+Ejemplo: `from apps.auxiliares.models import Lugar`
+"""
 from apps.auxiliares.models.ente import Ente
 from apps.auxiliares.models.estatus_operativo import EstatusOperativo
 from apps.auxiliares.models.lugar import Lugar

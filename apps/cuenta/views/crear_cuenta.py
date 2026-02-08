@@ -1,3 +1,9 @@
+"""Endpoints para creación de usuarios y obtención de tokens (sliding tokens).
+
+Rutas expuestas:
+- POST /auth/create  -> crear usuario (registro)
+- POST /auth/login   -> obtener token
+"""
 from datetime                   import datetime
 
 from ninja_extra                import api_controller, route

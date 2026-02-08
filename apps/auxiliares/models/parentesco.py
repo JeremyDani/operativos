@@ -1,13 +1,15 @@
 from django.db import models
 
+
 class Parentesco(models.Model):
+    """Modelo auxiliar para relaciones de parentesco (p. ej. padre, madre)."""
     descripcion     = models.CharField('Descripción',   max_length = 100, blank = True, null = True,  unique = True, editable = True)
     estatus         = models.BooleanField('Estatus',    default = True)
     motivo          = models.CharField('Motivo',        max_length = 100, null = True, blank = True)
     
     class Meta:
         managed             = True
-        db_table            = 'auxiliares\".\"parentesco'
+        db_table            = 'auxiliares"."parentesco'
         verbose_name        = 'Parentesco'
         verbose_name_plural = 'Parentescos'
         

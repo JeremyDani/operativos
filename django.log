@@ -1,0 +1,7 @@
+2026-02-05 15:00:58,859 INFO [django.utils.autoreload:668] autoreload 11140 133321867407488 Watching for file changes with StatReloader
+2026-02-05 15:01:50,452 INFO [django.server:212] basehttp 11140 133321784821440 "HEAD / HTTP/1.1" 302 0
+2026-02-05 15:03:13,255 INFO [django.server:212] basehttp 11140 133321784821440 "POST /api/cuenta/login/ HTTP/1.1" 200 44
+2026-02-05 15:03:13,410 INFO [django.server:212] basehttp 11140 133321784821440 "GET /api/libro/ HTTP/1.1" 200 1041
+2026-02-05 15:03:14,113 INFO [django.server:212] basehttp 11140 133321774335680 "POST /api/cuenta/login/ HTTP/1.1" 200 44
+2026-02-05 15:03:16,506 INFO [django:120] operation 11140 133321688352448 "GET - stats /api/historico/stats" 0.34609484672546387
+2026-02-05 15:03:16,507 INFO [django.server:212] basehttp 11140 133321688352448 "GET /api/historico/stats HTTP/1.1" 200 70

@@ -1,0 +1,3 @@
+id,cedula,nombres,apellidos,cargo,ente,fecha_registro,operativo_id,origen
+7,V30551654,NombrePrueba,ApellidoPrueba,Tester,MPPE,2026-01-31 23:45:13.834047+00:00,1,V
+8,V30551654,Prueba V30551654,,,MPPE,2026-01-31 23:54:15.306989+00:00,3,V

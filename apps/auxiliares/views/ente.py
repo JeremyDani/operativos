@@ -1,9 +1,14 @@
+"""Endpoints CRUD para `Ente`.
+
+Provee operaciones básicas para administrar entes en la base de datos.
+"""
 from typing import List
 from ninja import Router
 from apps.auxiliares.models.ente import Ente
 from apps.auxiliares.schemes.ente import EnteSchema
 
 router = Router(tags=['ente'])
+
 
 @router.get("/", response=List[EnteSchema])
 def list_entes(request):

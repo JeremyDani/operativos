@@ -9,7 +9,9 @@ from django.db.models import Q
 
 router = Router(tags=['participacion'])
 
+
 class TrabajadorSchema(Schema):
+    # Esquema esperado en el payload para guardar una participación
     cedula: str
     nombres: str
     apellidos: str
@@ -17,10 +19,16 @@ class TrabajadorSchema(Schema):
     ente: str = None
     origen: str = None
 
+
 @router.get("/{operativo_id}/buscar-trabajador/{cedula}")
 def buscar_trabajador(request, operativo_id: int, cedula: str):
+    """Busca un trabajador en VmNomina o en NominaEntes.
+
+    - Normaliza la cédula (acepta con o sin prefijo V/E)
+    - Intenta conversión a entero para consultas en campos IntegerField
+    - Devuelve un diccionario con la información encontrada o `encontrado: False`.
+    """
     get_object_or_404(Libro, id=operativo_id)
-    # Normalizar cédula: puede venir con prefijo 'V' o 'E' (e.g. 'V30551654').
     cedula_norm = (cedula or '').strip()
     origen_prefijo = None
     numero = cedula_norm
@@ -57,6 +65,11 @@ def buscar_trabajador(request, operativo_id: int, cedula: str):
             "ente": "MPPE"
         }
 
+    # Nota: `VmNomina` es una vista/materializada con `cedula` como IntegerField.
+    # Se intenta tanto la búsqueda numérica como textual para tolerar entradas
+    # con o sin prefijo (V/E). Esto previene fallos cuando el origen no está
+    # presente o cuando los dumps vienen en formatos distintos.
+
     if not trabajador:
         trabajador_ente = None
         if numero_int is not None:
@@ -84,8 +97,15 @@ def buscar_trabajador(request, operativo_id: int, cedula: str):
     else:
         return {"encontrado": False, "message": "Trabajador no encontrado en ninguna nómina."}
 
+
 @router.post("/{operativo_id}/guardar-participacion")
 def guardar_participacion(request, operativo_id: int, payload: TrabajadorSchema):
+    """Valida y crea una Participacion para un `Libro` (operativo).
+
+    - Verifica formato y origen de la cédula
+    - Evita duplicados por (operativo, cedula, origen)
+    - Crea el registro en la tabla de histórico (Participacion)
+    """
     operativo = get_object_or_404(Libro, id=operativo_id)
     cedula_norm = (payload.cedula or '').strip()
     origen_norm = (payload.origen or '').strip().upper()
@@ -111,12 +131,14 @@ def guardar_participacion(request, operativo_id: int, payload: TrabajadorSchema)
     return {"message": f"Participación de {participacion.nombres} registrada en el operativo '{operativo}'."}
 
 
-# Ruta compatible con el frontend que usa /api/operativos/{id}/verificar/{cedula}
 @router.get("/{operativo_id}/verificar/{cedula}")
 def verificar_por_cedula(request, operativo_id: int, cedula: str):
-    # Primero consultamos el historial de participaciones. Si existe
-    # un registro histórico retornamos esa información. Si no existe,
-    # entonces consultamos las nóminas (VmNomina / NominaEntes).
+    """Compatibilidad para la ruta que usa el frontend `/api/operativos/{id}/verificar/{cedula}`.
+
+    - Primero consulta el historial de participaciones para ese operativo
+    - Si hay historial reciente devuelve esa información
+    - Si no hay historial, delega en `buscar_trabajador` para consultar nóminas
+    """
     cedula_norm = (cedula or '').strip()
     # Buscar en historial considerando que la cédula puede venir con o sin
     # prefijo. Si la entrada es numérica, probamos con 'V' y 'E' también.
@@ -126,8 +148,14 @@ def verificar_por_cedula(request, operativo_id: int, cedula: str):
         candidates.append(f"V{cedula_norm}")
         candidates.append(f"E{cedula_norm}")
 
+    # Construcción de la consulta histórica: al intentar matchear sin prefijo
+    # se prueban variantes con 'V' y 'E'. La combinación de Q permite buscar
+    # cualquiera de las variantes sin causar múltiples consultas separadas.
+    historial_q = Q(cedula__iexact=candidates[0])
+    if len(candidates) > 1:
+        historial_q |= Q(cedula__iexact=candidates[1])
     historial = Participacion.history.filter(operativo_id=operativo_id).filter(
-        Q(cedula__iexact=candidates[0]) | Q(cedula__iexact=candidates[1]) if len(candidates) > 1 else Q(cedula__iexact=candidates[0])
+        historial_q
     ).order_by('-history_date').first()
 
     result = {}

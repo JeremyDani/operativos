@@ -1,9 +1,12 @@
+"""Rutas CRUD para `Parentesco` (tabla auxiliar).
+"""
 from typing import List
 from ninja import Router
 from apps.auxiliares.models import Parentesco
 from apps.auxiliares.schemes import ParentescoSchema
 
 router = Router(tags=['parentesco'])
+
 
 @router.get("/", response=List[ParentescoSchema])
 def list_parentescos(request):
