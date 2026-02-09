@@ -1,6 +1,6 @@
 # Plan de Acción — Operativos
 
-**Última actualización:** 2026-02-07
+**Última actualización:** 2026-02-08
 
 **Propósito:** Documento operativo que describe el funcionamiento, despliegue, mantenimiento y procedimientos de recuperación para el sistema "operativos".
 
@@ -46,6 +46,28 @@ cd frontend && npm install
 ```
 
 **3. Despliegue y arranque**
+
+**3.1. Entorno de desarrollo (local)**
+
+Backend (Django):
+
+```bash
+source .venv/bin/activate
+python manage.py runserver
+```
+
+Frontend (Vite + Vue, puerto 5173):
+
+```bash
+cd frontend
+npm run dev -- --port 5173
+```
+
+URLs típicas en desarrollo:
+- Backend / Admin: http://localhost:8000/admin/
+- Frontend (SPA): http://localhost:5173
+
+**3.2. Despliegue en servidor**
 
 Pasos generales:
 

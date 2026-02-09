@@ -13,16 +13,24 @@ También hay una base de datos (Postgres) que guarda todo: operativos, nóminas 
 
 ## 2. Roles y flujos habituales (cómo se usa)
 
-- Administrador / Operador:
-  - Crea un `operativo` (título, fechas, lugar, tipo).
-  - Publica el operativo para que los verificadores puedan registrar participaciones.
-- Verificador / Usuario en terreno:
-  - Desde la app web, busca una persona por cédula.
+En la práctica se usan tres tipos de usuarios principales (roles vienen de grupos de Django):
+
+- **Operador** (`operador`):
+  - Crea y gestiona un `operativo` (título, fechas, lugar, tipo).
+  - Publica el operativo para que se puedan registrar participaciones.
+  - En la web de operativos NO ve el botón de **Reporte** (solo ve la lista y la verificación).
+- **Verificador / Usuario en terreno**:
+  - Usa la pantalla de verificación para buscar una persona por cédula.
   - Si la persona aparece en las nóminas (VM o por ente), la aplicación muestra datos básicos.
   - Si la persona ya participó en ese operativo, se consulta el historial y se evita duplicar el registro.
   - Si no hay historial, puede registrar la participación (se guarda en la tabla histórica).
-- Analista:
+- **Analista** (`analista`):
+  - Ve el botón de **Reporte** en la pantalla de operativos y puede entrar a reportes históricos.
   - Consulta reportes agregados (por ente, por tipo de operativo) para ver estadísticas.
+  - Tiene acceso al panel de administración (Django admin) para consultas más avanzadas (según permisos).
+- **Administrador** (`administrador`):
+  - Tiene permisos amplios sobre operativos, datos maestros y usuarios.
+  - Ve el botón de **Reporte** y también el panel de administración completo.
 
 ## 3. Operaciones concretas y dónde buscarlas
 
@@ -50,7 +58,9 @@ Estas rutas están documentadas en los módulos `apps/operativos/views` y `apps/
 3. En el formulario de verificación, ingresar la cédula:
    - Si el sistema responde `encontrado`, revisar datos y, si procede, registrar participación.
    - Si no, optar por registrar manualmente y añadir observaciones.
-4. Para ver resúmenes: ir a la sección de reportes.
+4. Para ver resúmenes:
+  - Operador: no ve el botón de **Reporte**, se centra en registrar/verificar.
+  - Analista / Administrador: usan el botón de **Reporte** para entrar a los reportes históricos.
 
 ## 7. Qué hacer si algo no funciona (guía práctica)
 

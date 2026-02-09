@@ -1,6 +1,7 @@
 <template>
   <!-- Pantalla para verificar la cédula de un trabajador y registrar su participación -->
   <div class="verificar-container">
+    <div class="verificar-card">
     <h1>Demostrador</h1>
     <div class="verificar-form">
       <div class="input-row">
@@ -65,6 +66,7 @@
           <button class="btn-cancel" @click="errorModalVisible = false">Aceptar</button>
         </div>
       </div>
+    </div>
     </div>
   </div>
 </template>
@@ -253,6 +255,21 @@
 
         <style scoped>
         .verificar-container {
+          /* Fondo a pantalla casi completa para la vista de verificación */
+          min-height: calc(100vh - 60px);
+          width: 100%;
+          padding: 40px 20px;
+          display: flex;
+          justify-content: center;
+          align-items: flex-start;
+          /* Usa la misma imagen de fondo que /operativos */
+          background-image: url('/fondo%20frontend.jpg');
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+        }
+
+        .verificar-card {
           width: 80%;
           max-width: 800px;
           margin: 20px auto;
@@ -272,8 +289,8 @@
         .cedula-input{flex:1;padding:12px;border-radius:6px;border:1px solid #dcdcdc}
 
         .verify-bar{margin-top:12px}
-        .big-verify{width:100%;display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;background:#27ae60;color:#fff;border:none;border-radius:6px;font-weight:600;cursor:pointer;box-shadow:0 6px 18px rgba(39,174,96,0.14)}
-        .big-verify:hover{background:#219150}
+        .big-verify{width:100%;display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;background:#0d6efd;color:#fff;border:none;border-radius:6px;font-weight:600;cursor:pointer;box-shadow:0 6px 18px rgba(13,110,253,0.25)}
+        .big-verify:hover{background:#0b5ed7}
         .resultado-panel {
           margin-top: 20px;
           padding: 15px;
@@ -327,8 +344,8 @@
 
         .modal-actions { display:flex; gap:12px; padding:16px; }
         .modal-actions.split{justify-content:space-between}
-        .btn-confirm { background:#27ae60; color:#fff; padding:10px 18px; border:none; border-radius:6px; cursor:pointer; flex:1 }
+        .btn-confirm { background:#0d6efd; color:#fff; padding:10px 18px; border:none; border-radius:6px; cursor:pointer; flex:1 }
         .btn-confirm:disabled{opacity:0.6;cursor:not-allowed}
-         .btn-cancel { background:#f39c12; color:#fff; padding:10px 18px; border:none; border-radius:6px; cursor:pointer; flex:1 }
+         .btn-cancel { background:#0b5ed7; color:#fff; padding:10px 18px; border:none; border-radius:6px; cursor:pointer; flex:1 }
         /* Logout button removed */
         </style>

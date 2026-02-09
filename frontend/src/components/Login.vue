@@ -1,12 +1,12 @@
 <template>
   <!-- Contenedor de login: formulario controla `username` y `password` -->
-  <div class="login-page" :style="{ backgroundImage: `url(${fondo})` }">
+  <div class="login-page">
     <div class="login-left">
       <div class="login-card">
         <picture class="brand-small">
           <img :src="logoSmall" alt="SGI-Operativos" />
         </picture>
-        <h2 class="title">Por favor ingrese sus credenciales</h2>
+        <h2 class="title">SGI-Operativos</h2>
         <form @submit.prevent="handleLogin" class="login-form">
           <div class="form-group">
             <label for="username">Usuario</label>
@@ -22,15 +22,9 @@
       </div>
     </div>
 
-    <div class="login-right">
-      <div class="right-brand">
-      <img :src="logoMppe" alt="Gobierno Bolivariano" class="right-logo" />
-        <div class="right-text">
-          <h3>Gobierno Bolivariano de Venezuela</h3>
-          <p>Ministerio del Poder Popular para la Educación</p>
-        </div>
-      </div>
+    <div class="login-right" :style="{ backgroundImage: `url(${fondo})` }">
     </div>
+
   </div>
 </template>
 
@@ -110,39 +104,39 @@ export default {
 
 <style scoped>
 .login-page {
-  min-height: 70vh;
-  display: flex;
-  gap: 2rem;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  background-image: url('/fondo.jpg');
-  background-size: cover;
-  background-position: center;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.38fr);
+  gap: 0;
+  width: 100vw;
+  padding: 0;
+  margin: 0;
+  background-color: #ffffff;
 }
-.login-left{flex:0 0 44%;max-width:640px}
-.login-card{background: rgba(255,255,255,0.95);padding:2rem;border-radius:8px;box-shadow:0 8px 30px rgba(15,23,42,0.08)}
+.login-left{flex:1;max-width:none;display:flex;justify-content:center;align-items:center;padding:2rem 4rem}
+.login-card{background:#ffffff;padding:2.5rem 3rem;border-radius:16px;box-shadow:0 18px 45px rgba(15,23,42,0.10);max-width:420px;width:100%;text-align:left}
 .brand-small img{max-width:220px;display:block;margin:0 0 1rem 0}
-.title{margin:0 0 1rem 0;color:#222}
+.title{margin:0 0 1.5rem 0;color:#111;font-size:1.6rem;font-weight:700}
 .login-form .form-group{margin-bottom:1rem}
 .login-form label{display:block;margin-bottom:0.4rem;color:#444}
 .login-form input{width:100%;padding:0.75rem;border:1px solid #e6e9ee;border-radius:6px}
-.btn-primary{width:100%;padding:0.75rem;background:#0d6efd;color:#fff;border:none;border-radius:6px;cursor:pointer;box-shadow:0 6px 18px rgba(13,110,253,0.14)}
+.btn-primary{width:100%;padding:0.85rem;background:#0d6efd;color:#fff;border:none;border-radius:999px;cursor:pointer;box-shadow:0 10px 24px rgba(13,110,253,0.25);font-weight:600}
 .btn-primary:active{transform:translateY(1px)}
 .error-message{color:#c92a2a;margin-top:1rem}
-.login-right{flex:1 1 46%;display:flex;align-items:center;justify-content:center}
-.right-brand{display:flex;align-items:center;gap:1.5rem;padding:2rem;background:rgba(255,255,255,0.6);border-radius:8px}
-.right-logo{max-width:320px}
+.login-right{flex:0 0 38%;height:100vh;display:flex;align-items:flex-end;justify-content:flex-end;background-size:cover;background-position:center;border-radius:0;overflow:hidden}
+.right-brand{display:flex;align-items:center;gap:1.5rem;padding:1.5rem 1.8rem;background:rgba(0,0,0,0.4);border-radius:0;margin:0}
+.right-logo{max-width:260px;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.45))}
 .right-text h3{margin:0;font-size:1.4rem}
 .right-text p{margin:0;color:#555}
-@media (max-width:900px){.login-page{flex-direction:column}.login-left,.login-right{max-width:720px}}
+@media (max-width:900px){
+  .login-page{flex-direction:column}
+  .login-left{flex:0 0 auto;padding:1.5rem}
+  .login-right{flex:0 0 auto;width:100%;height:260px}
+}
 
 @media (max-width:720px){
-  .login-page{padding:1rem}
-  .login-left{flex:1 1 100%;max-width:100%}
-  .login-right{flex:1 1 100%;max-width:100%;margin-top:12px}
+  .login-left{padding:1.25rem}
+  .login-right{height:220px}
   .brand-small img{max-width:160px}
-  .right-text h3{font-size:1rem}
-  .right-text p{font-size:0.9rem}
 }
 </style>

@@ -1,0 +1,143 @@
+# MODULOS PRINCIPALES DEL SISTEMA "OPERATIVOS"
+
+Este archivo explica, en palabras sencillas, qué hace cada módulo principal del sistema y "dónde cae" cada cosa.
+
+============================================================
+1) CONFIGURACION (PROYECTO DJANGO PRINCIPAL)
+============================================================
+
+Ubicación: configuracion/
+
+- Es el "corazón" del backend Django.
+- Contiene la configuración global del proyecto:
+  - settings.py  -> ajustes generales (BD, apps instaladas, estáticos, etc.)
+  - urls.py      -> rutas principales del backend
+  - asgi.py / wsgi.py -> puntos de entrada para servidores (desarrollo / producción)
+- Piensa en esto como el panel eléctrico de la casa: aquí se enciende y conecta todo.
+
+============================================================
+2) APLICACIONES DJANGO (apps/)
+============================================================
+
+Dentro de la carpeta apps/ hay varios módulos (aplicaciones) separados por responsabilidad.
+
+2.1) apps/cuenta
+-----------------
+- Maneja usuarios, perfiles y autenticación.
+- Se apoya en el sistema de usuarios de Django y en grupos/permisos.
+- Aquí viven cosas como:
+  - Modelos de usuario/perfil (si hay personalización).
+  - Formularios para login / registro (lado Django).
+  - Vistas y URLs relacionadas con cuentas.
+- Relación con el frontend: el login del sistema (Vue) habla con este módulo para validar credenciales.
+
+2.2) apps/operativos
+---------------------
+- Es el módulo principal para gestionar los "operativos" (campañas, jornadas, etc.).
+- Tareas típicas de este módulo:
+  - Crear, editar y listar operativos.
+  - Asociar nóminas/listas de personas a un operativo.
+  - Exponer endpoints para verificar una cédula dentro de un operativo.
+  - Registrar participaciones nuevas (cuando alguien asiste/participa).
+- El frontend usa estos endpoints para:
+  - Mostrar la tabla de operativos.
+  - Abrir la pantalla de verificación `/operativos/:id/verificar`.
+
+2.3) apps/historico
+--------------------
+- Guarda el historial de participaciones.
+- Cada vez que alguien participa en un operativo, se registra aquí un rastro histórico.
+- Permite:
+  - Saber si una persona ya participó antes (y en qué operativo).
+  - Generar estadísticas y reportes a partir de estos datos.
+- El módulo de reportes históricos del frontend se alimenta de este histórico.
+
+2.4) apps/auxiliares
+---------------------
+- Agrupa funcionalidades de apoyo ("utilidades" del sistema).
+- Puede contener:
+  - Modelos de catálogos/maestros (entes, tipos de operativo, etc.).
+  - Funciones auxiliares reutilizables por otras apps.
+  - Vistas o APIs de referencia que no pertenecen a un solo módulo grande.
+
+2.5) apps/frontend
+-------------------
+- Es una app Django ligera para integrar el frontend SPA con Django.
+- Suele exponer vistas que devuelven la plantilla base donde se monta Vue.
+- Se usa principalmente para servir la entrada del frontend cuando se despliega todo bajo Django.
+
+============================================================
+3) FRONTEND SPA (VUE + VITE)
+============================================================
+
+Ubicación: frontend/
+
+- Contiene la aplicación de una sola página (SPA) hecha con Vue 3 y Vite.
+- Estructura principal:
+  - src/main.js     -> punto de entrada de Vue.
+  - src/router.js   -> definición de rutas (login, operativos, verificación, reportes, etc.).
+  - src/App.vue     -> layout principal (header, contenedor de vistas).
+  - src/components/ -> componentes de interfaz (Login, listas, verificación, reportes, etc.).
+- Rutas típicas del frontend:
+  - /login                     -> pantalla de inicio de sesión.
+  - /operativos                -> listado de operativos.
+  - /operativos/:id/verificar  -> verificación de cédula en un operativo concreto.
+  - /reportes/historico        -> reportes / estadísticas históricas.
+- El frontend consume la API del backend (las apps Django) para mostrar datos y registrar acciones.
+
+============================================================
+4) SCRIPTS Y TAREAS DE MANTENIMIENTO (scripts/)
+============================================================
+
+Ubicación: scripts/
+
+- Son pequeños programas Python que ayudan en tareas de operación y mantenimiento.
+- Ejemplos:
+  - backup_participaciones.py
+  - backup_and_clear_participaciones_historico.py
+  - clear_participaciones.py
+- Suelen usarse para:
+  - Hacer respaldos de tablas importantes.
+  - Limpiar historiales muy grandes.
+  - Poblar o ajustar datos de prueba.
+- Normalmente se ejecutan desde consola, dentro del entorno virtual, con:
+
+  python manage.py shell < scripts/nombre_script.py
+
+(o bien importando los módulos desde un shell interactivo).
+
+============================================================
+5) ARCHIVOS ESTÁTICOS Y PLANTILLAS
+============================================================
+
+5.1) static/ y staticfiles/
+---------------------------
+- static/      -> estáticos propios del proyecto (CSS, JS, imágenes).
+- staticfiles/ -> carpeta generada por collectstatic (para producción).
+- Incluyen, por ejemplo:
+  - Estilos de login (login.css).
+  - Librerías de terceros (adminlte, bootstrap, etc.).
+
+5.2) templates/
+----------------
+- Plantillas HTML de Django.
+- Aquí viven las vistas del admin personalizado y otras pantallas basadas en servidor.
+- Aunque el frontend principal es SPA con Vue, estas plantillas siguen siendo útiles para:
+  - El panel de administración.
+  - Páginas específicas que se sirven directamente desde Django.
+
+============================================================
+6) RESUMEN MENTAL RAPIDO
+============================================================
+
+- "configuracion/"      -> Configuración global del proyecto Django.
+- "apps/cuenta"         -> Usuarios, login, permisos.
+- "apps/operativos"     -> Gestión de operativos y verificación en campo.
+- "apps/historico"      -> Historial de participaciones y base de reportes.
+- "apps/auxiliares"     -> Catálogos y utilidades compartidas.
+- "apps/frontend"       -> Puente entre Django y la SPA.
+- "frontend/"           -> Aplicación Vue (pantallas que ve el usuario final).
+- "scripts/"            -> Tareas especiales: backups, limpieza, pruebas.
+- "static/", "templates/" -> Recursos visuales y plantillas de Django.
+
+Con esto deberías tener un mapa claro de "qué hace cada módulo" y dónde buscar cuando necesites cambiar algo o investigar un comportamiento.
