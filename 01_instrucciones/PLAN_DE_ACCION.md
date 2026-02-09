@@ -1,3 +1,17 @@
+
+**12. Verificación y panel de administración**
+
+- **Pantalla de verificación de trabajador** (`/operativos/:id/verificar`):
+  - Cuando se encuentra un trabajador válido (y sin participación reciente en ese operativo), se abre un modal titulado **"Datos del Trabajador"**.
+  - En ese modal se muestran datos básicos y resumidos: Ente, Origen y Cédula, Nombre y Apellido, junto con los botones para **Confirmar** o **Cancelar** el registro de participación.
+
+- **Roles y acceso al panel de administración (Django admin)**:
+  - El grupo **administrador** se usa como "rol de administración funcional" dentro de la aplicación. En el admin de Django, a estos usuarios se les ocultan los módulos avanzados de **Operativos** y **Auxiliares**, dejándoles visibles principalmente las secciones de **Autenticación y autorización** y **Cuenta**.
+  - El grupo **analista** se configura como `is_staff = True` para poder acceder al admin cuando se requieran consultas o tareas avanzadas (según los permisos que se les asignen).
+  - La aplicación de Django **REST PasswordReset** se mantiene disponible a nivel técnico, pero su sección se oculta del menú de admin para no confundir a los usuarios de negocio.
+
+> Recordatorio: cualquier cambio adicional en roles, grupos o visibilidad de módulos en el admin debe reflejarse aquí y en la documentación de módulos del sistema.
+
 # Plan de Acción — Operativos
 
 **Última actualización:** 2026-02-08
@@ -197,18 +211,18 @@ curl -sS -H 'Accept: application/json' https://<host>/api/operativos/
 
 _Fin del documento — mantener sincronizado con cambios de arquitectura o despliegue._
 
-**11. Cambios funcionales recientes (interfaz)**
+**11. Interfaz de usuario (estado actual)**
 
-Esta sección resume ajustes funcionales visibles para los usuarios finales que ya están desplegados:
+Esta sección describe el comportamiento actual visible para los usuarios finales:
 
 - **Reporte histórico de participaciones** (`/reportes/historico`):
-  - Subtítulo actualizado a: "Reporte  de participaciones en los operativos".
-  - Se habilitó un filtro de rango de fechas (desde / hasta) en la parte superior; el backend (`/api/historico/stats`) recibe estos parámetros y devuelve estadísticas acotadas al rango.
-  - Se muestra explícitamente el rango seleccionado en el encabezado del reporte (formato DD/MM/AAAA).
+  - Subtítulo: "Reporte  de participaciones en los operativos".
+  - Dispone de un filtro de rango de fechas (desde / hasta) en la parte superior; el backend (`/api/historico/stats`) recibe estos parámetros y devuelve estadísticas acotadas al rango.
+  - Muestra explícitamente el rango seleccionado en el encabezado del reporte (formato DD/MM/AAAA).
   - El botón **"Descargar PDF"** dispara la impresión del navegador para generar un PDF del tablero con el rango actual.
 
 - **Calendario de operativos** (`/operativos`):
-  - Se agregó un icono de calendario en la barra superior del frontend; al pulsarlo, se abre un calendario emergente (modal) con vista mensual.
+  - En la barra superior del frontend hay un icono de calendario; al pulsarlo, se abre un calendario emergente (modal) con vista mensual.
   - El calendario:
     - Marca con puntos rojos los días con operativos ya iniciados.
     - Marca con puntos verdes los días con operativos próximos.
@@ -216,13 +230,13 @@ Esta sección resume ajustes funcionales visibles para los usuarios finales que 
   - Al hacer clic en un día, la lista de operativos se filtra por esa fecha y se muestra un indicador de filtro con opción para limpiarlo.
 
 - **Perfil y ajustes de usuario**:
-  - Se añadió una ruta `/perfil` donde el usuario puede ver su nombre completo, cédula, correo y roles asignados.
-  - Se creó una pantalla `/ajustes`, accesible desde el icono de usuario, que contiene una opción **Cambio de contraseña**.
+  - Existe una ruta `/perfil` donde el usuario puede ver su nombre completo, cédula, correo y roles asignados.
+  - Hay una pantalla `/ajustes`, accesible desde el icono de usuario, que contiene una opción **Cambio de contraseña**.
   - Al hacer clic en **Cambio de contraseña** se abre un modal que solicita contraseña actual, nueva y confirmación; este formulario consume el endpoint backend `/api/auth/change-password`.
 
 - **Comportamiento de sesión (frontend y admin)**:
-  - El frontend ahora almacena los datos de usuario en `sessionStorage` (no en `localStorage`), lo que implica que al cerrar la pestaña o ventana del navegador el usuario deberá iniciar sesión de nuevo al regresar.
-  - En el admin de Django (`/admin`) se configuró `SESSION_EXPIRE_AT_BROWSER_CLOSE = True`, de modo que al cerrar el navegador completo la sesión administrativa se cierra y, al volver a entrar a `/admin/`, se muestra de nuevo la pantalla de login.
+  - El frontend almacena los datos de usuario en `sessionStorage` (no en `localStorage`), lo que implica que al cerrar la pestaña o ventana del navegador el usuario deberá iniciar sesión de nuevo al regresar.
+  - En el admin de Django (`/admin`) se usa `SESSION_EXPIRE_AT_BROWSER_CLOSE = True`, de modo que al cerrar el navegador completo la sesión administrativa se cierra y, al volver a entrar a `/admin/`, se muestra de nuevo la pantalla de login.
 
 - **Visibilidad de iconos según rol**:
   - Icono de calendario: se muestra para cualquier usuario autenticado (operador, analista, administrador).

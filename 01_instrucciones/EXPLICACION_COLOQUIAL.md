@@ -1,3 +1,16 @@
+
+## 13. Verificación y panel de administración
+
+- **Pantalla de verificación de trabajador** (`/operativos/:id/verificar`):
+  - Cuando el sistema encuentra un trabajador válido y sin participación reciente en ese operativo, se abre una ventana emergente titulada **"Datos del Trabajador"**.
+  - En esa ventana se muestran los datos básicos necesarios para confirmar: **Ente**, **Origen y Cédula** y **Nombre y Apellido**, junto con los botones para confirmar o cancelar el registro.
+  - Si el trabajador ya participó recientemente, se muestra un mensaje informativo y no se abre el modal de confirmación.
+
+- **Roles y uso del panel de administración (Django admin)**:
+  - Los usuarios del grupo **administrador** son los responsables funcionales del sistema y, en el panel de administración, solo ven las secciones de **Autenticación y autorización** y **Cuenta**; los módulos más técnicos de **Operativos** y **Auxiliares** se ocultan para evitar errores accidentales.
+  - Los usuarios del grupo **analista** se configuran como usuarios de staff (`is_staff`), de forma que pueden entrar al admin cuando se requieran consultas más avanzadas, siempre respetando los permisos definidos.
+  - La sección técnica de **Django REST PasswordReset** no aparece en el menú del admin; el sistema usa ese mecanismo internamente, pero se oculta de la vista de los usuarios de negocio para no generar confusión.
+
 # Explicación coloquial — ¿Qué hace este sistema?
 
 Este documento está pensado para cualquiera que necesite entender "de forma simple" qué hace el proyecto `operativos`, cómo usarlo día a día, y qué hacer cuando algo falla — sin meterse en tecnicismos profundos.
@@ -98,12 +111,12 @@ Estas rutas están documentadas en los módulos `apps/operativos/views` y `apps/
 
 Si quieres lo puedo convertir en una versión más corta (cheat-sheet) para imprimir o en una guía paso-a-paso para nuevos verificadores.
 
-## 11. Novedades recientes: reportes y calendario
+## 11. Reportes y calendario
 
-Para que los usuarios no técnicos sepan qué cambió últimamente en la interfaz:
+Descripción de cómo funcionan actualmente los reportes y el calendario en la interfaz:
 
 - **Reporte histórico de participaciones** (`/reportes/historico`):
-  - El título ahora se muestra simplemente como **"Reporte"**.
+  - El título principal se muestra como **"Reporte"**.
   - Debajo aparece el texto **"Reporte  de participaciones en los operativos"**.
   - Hay dos campos de fecha (desde / hasta) en la parte superior derecha; al cambiar esas fechas, el sistema recalcula las estadísticas históricas y las gráficas solo para ese rango.
   - Se ve también una línea que indica claramente el rango seleccionado: "Desde DD/MM/AAAA hasta DD/MM/AAAA".
@@ -117,9 +130,9 @@ Para que los usuarios no técnicos sepan qué cambió últimamente en la interfa
   - Se puede navegar por meses y años desde el mismo calendario.
   - Si se hace clic en un día, la lista principal de operativos se filtra para mostrar solo los operativos de esa fecha; aparece un aviso encima de la lista indicando qué fecha se está filtrando y un botón para quitar el filtro.
 
-## 12. Novedades recientes: perfil, ajustes y sesiones
+## 12. Perfil, ajustes y sesiones
 
-Para completar la experiencia del usuario se añadieron pantallas de cuenta y se ajustó cómo se manejan las sesiones:
+Estas secciones completan la experiencia del usuario en cuanto a cuenta y manejo de sesiones:
 
 - **Perfil de usuario** (`/perfil`):
   - Muestra el nombre y apellido completos del usuario autenticado.

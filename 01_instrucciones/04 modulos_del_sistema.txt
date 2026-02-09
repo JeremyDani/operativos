@@ -32,6 +32,7 @@ Dentro de la carpeta apps/ hay varios módulos (aplicaciones) separados por resp
 - Relación con el frontend:
   - El login del sistema (Vue) usa un endpoint JSON (`/api/cuenta/login/`) que valida el usuario y devuelve datos básicos (nombre, correo, roles, etc.).
   - Existe un endpoint de cambio de contraseña (`/api/auth/change-password`) que recibe la contraseña actual y la nueva, y actualiza la del usuario autenticado.
+   - En el admin de Django, la aplicación técnica de **Django REST PasswordReset** está oculta del menú; se usa internamente para gestión de tokens de reseteo, pero no la ven los usuarios de negocio.
 
 2.2) apps/operativos
 ---------------------
@@ -108,6 +109,12 @@ Ubicación: frontend/
   - Presenta gráficas y listados agregados por ente y por tipo de operativo.
   - Tiene un botón "Descargar PDF" que usa la función de impresión del navegador para generar un PDF/captura del reporte con el rango de fechas seleccionado.
 
+- Pantalla de verificación de trabajador (`/operativos/:id/verificar` — componente VerificarTrabajador.vue):
+  - Permite ingresar una cédula (con selector de origen V/E) y verificar si la persona existe en las nóminas asociadas al operativo y en el histórico de participaciones.
+  - Si el trabajador ya participó recientemente en ese operativo, se muestra un mensaje informativo y no se permite volver a registrarlo.
+  - Si se encuentra un trabajador válido y sin participación reciente, se abre un modal titulado **"Datos del Trabajador"** con los datos básicos (Ente, Origen y Cédula, Nombre y Apellido) y botones para confirmar o cancelar el registro de participación.
+  - Se eliminó el recuadro fijo "Resultado para la Cédula"; la confirmación se hace directamente desde el modal.
+
 - Pantalla de perfil (`/perfil` — componente Profile.vue):
   - Lee la información del usuario autenticado (nombre, cédula, correo, roles) desde el store de autenticación.
   - Muestra esta información de forma resumida para que el usuario sepa con qué cuenta está trabajando.
@@ -123,6 +130,13 @@ Ubicación: frontend/
   - La barra superior muestra iconos distintos según el rol:
     - Icono de calendario: visible para cualquier usuario autenticado (operadores, analistas, administradores).
     - Icono de reportes: visible para administradores, analistas y usuarios sin rol, pero no para operadores.
+
+3.2) Panel de administración y roles
+------------------------------------
+
+- El acceso al panel de administración de Django (`/admin`) se controla con `is_staff` y grupos:
+  - Usuarios del grupo **administrador** se tratan como administradores funcionales de la aplicación: en el admin solo ven principalmente las secciones de **Autenticación y autorización** y **Cuenta**; los módulos de **Operativos** y **Auxiliares** se ocultan para reducir riesgos.
+  - Usuarios del grupo **analista** se configuran como usuarios de staff (`is_staff = True`) cuando necesitan acceso al admin para consultas avanzadas, manteniendo la configuración técnica bajo control.
 
 ============================================================
 4) SCRIPTS Y TAREAS DE MANTENIMIENTO (scripts/)

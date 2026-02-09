@@ -29,27 +29,18 @@
     </div>
     <div v-if="loading">Cargando...</div>
     <div v-if="mensaje" class="mensaje" :class="mensajeTipo">{{ mensaje }}</div>
-    <div v-if="resultado" class="resultado-panel">
-      <h3>Resultado para la Cédula: {{ resultado.cedula }}</h3>
-      <p><strong>Nombres:</strong> {{ resultado.nombres }}</p>
-      <p><strong>Apellidos:</strong> {{ resultado.apellidos }}</p>
-      <p><strong>Cargo:</strong> {{ resultado.cargo }}</p>
-      <p><strong>Dependencia:</strong> {{ resultado.dependencia }}</p>
-    </div>
 
     <!-- Modal: muestra datos del operativo y datos de la nómina para confirmar participación -->
     <div v-if="modalVisible" class="modal-overlay" @click="closeModal">
       <div class="modal-content" @click.stop>
         <div class="modal-header">
-          <h2>Datos del demostrador</h2>
-        </div>
+    <h2>Datos del Trabajador</h2>
+  </div>
 
         <div class="modal-body info-grid">
           <div class="row"><span class="key">Ente:</span><span class="val">{{ trabajador.ente || '-' }}</span></div>
           <div class="row"><span class="key">Origen y Cédula:</span><span class="val">{{ trabajador.cedula || (originSelection + cedula) }}</span></div>
           <div class="row"><span class="key">Nombre y Apellido:</span><span class="val">{{ (trabajador.nombres || '-') + (trabajador.apellidos ? (' ' + trabajador.apellidos) : '') }}</span></div>
-          <div class="row"><span class="key">Entidad:</span><span class="val">{{ trabajador.entidad || '-' }}</span></div>
-          <div class="row"><span class="key">Cargo:</span><span class="val">{{ trabajador.cargo || trabajador.clasificacion || '-' }}</span></div>
         </div>
 
         <div class="modal-actions split">

@@ -1,8 +1,9 @@
 from django.contrib                             import admin
-from django.utils.html 			                import format_html
+from django.utils.html 		                import format_html
 from apps.operativos.models.nomina_entes        import NominaEntes
+from apps.operativos.admin.permissions           import RestrictAdministradorGroupMixin
 
-class NominaEntesAdmin(admin.ModelAdmin):
+class NominaEntesAdmin(RestrictAdministradorGroupMixin, admin.ModelAdmin):
 
     # Accesos directos del lado derecho
     def editar(self, obj):

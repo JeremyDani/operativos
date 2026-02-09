@@ -1,8 +1,9 @@
 from django.contrib                             import admin
-from django.utils.html 			                import format_html
+from django.utils.html 		                import format_html
 from apps.operativos.models.libro                import Libro
+from apps.operativos.admin.permissions           import RestrictAdministradorGroupMixin
 
-class LibroAdmin(admin.ModelAdmin):
+class LibroAdmin(RestrictAdministradorGroupMixin, admin.ModelAdmin):
 
     # Accesos directos del lado derecho
     def editar(self, obj):

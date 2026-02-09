@@ -1,8 +1,9 @@
 from django.contrib                             import admin
-from django.utils.html 			                import format_html
+from django.utils.html 		                import format_html
 from apps.auxiliares.models.estatus_operativo   import EstatusOperativo
+from apps.operativos.admin.permissions           import RestrictAdministradorGroupMixin
 
-class EstatusOperativoAdmin(admin.ModelAdmin):
+class EstatusOperativoAdmin(RestrictAdministradorGroupMixin, admin.ModelAdmin):
 
     # Accesos directos del lado derecho
     def editar(self, obj):

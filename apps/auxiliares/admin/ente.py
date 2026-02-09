@@ -1,8 +1,9 @@
 from django.contrib                             import admin
-from django.utils.html 			                import format_html
+from django.utils.html 		                import format_html
 from apps.auxiliares.models.ente                import Ente
+from apps.operativos.admin.permissions           import RestrictAdministradorGroupMixin
 
-class EnteAdmin(admin.ModelAdmin):
+class EnteAdmin(RestrictAdministradorGroupMixin, admin.ModelAdmin):
 
     # Accesos directos del lado derecho
     def editar(self, obj):

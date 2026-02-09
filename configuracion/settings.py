@@ -306,4 +306,10 @@ JAZZMIN_SETTINGS = {
         "auth.user": "fas fa-user",
         "auth.Group": "fas fa-users",
     },
+
+    # Ocultar completamente la app de Django REST PasswordReset del menú de admin
+    # para todos los usuarios de staff (incluido el rol administrador).
+    "hide_apps": [
+        "django_rest_passwordreset",
+    ],
 }

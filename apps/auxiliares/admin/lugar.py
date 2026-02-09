@@ -1,8 +1,9 @@
 from django.contrib                             import admin
-from django.utils.html 			                import format_html
+from django.utils.html 		                import format_html
 from apps.auxiliares.models.lugar               import Lugar
+from apps.operativos.admin.permissions           import RestrictAdministradorGroupMixin
 
-class LugarAdmin(admin.ModelAdmin):
+class LugarAdmin(RestrictAdministradorGroupMixin, admin.ModelAdmin):
 
     # Accesos directos del lado derecho
     def editar(self, obj):
