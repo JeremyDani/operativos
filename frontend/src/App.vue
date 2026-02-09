@@ -15,7 +15,7 @@
             <span v-if="authStore.isAuthenticated" class="icon-nav">
               <!-- Icono Calendario (antes del icono de reportes, mismo estilo) -->
               <router-link
-                v-if="authStore.isAuthenticated && (isAdmin || (!isOperador && (!authStore.user.roles || authStore.user.roles.length === 0)))"
+                v-if="authStore.isAuthenticated"
                 to="/operativos"
                 class="icon-link calendar-link"
                 title="Calendario de operativos"
@@ -30,9 +30,9 @@
                 <span class="calendar-text">Calendario</span>
               </router-link>
 
-              <!-- Icono Reportes (visible para administradores y usuarios sin roles, pero no para operadores) -->
+              <!-- Icono Reportes (visible para administradores, analistas y usuarios sin roles, pero no para operadores) -->
               <router-link
-                v-if="authStore.isAuthenticated && (isAdmin || (!isOperador && (!authStore.user.roles || authStore.user.roles.length === 0)))"
+                v-if="authStore.isAuthenticated && (isAdmin || isAnalista || (!isOperador && (!authStore.user.roles || authStore.user.roles.length === 0)))"
                 to="/reportes/historico"
                 class="icon-link report-link"
                 title="Reportes"
@@ -59,7 +59,7 @@
 
             <div v-if="menuOpen" class="profile-menu">
               <router-link to="/perfil" class="menu-item" @click="closeMenu">Ver Perfil</router-link>
-              <router-link to="/settings" class="menu-item" @click="closeMenu">Ajustes</router-link>
+              <router-link to="/ajustes" class="menu-item" @click="closeMenu">Ajustes</router-link>
               <button class="menu-item logout" @click="doLogout">Cerrar sesión</button>
             </div>
           </div>
@@ -92,6 +92,8 @@ const authStore = useAuthStore();
 const isOperador = computed(() => authStore.user && Array.isArray(authStore.user.roles) && authStore.user.roles.includes('operador'));
 // Indica si el usuario autenticado pertenece al rol "administrador"
 const isAdmin = computed(() => authStore.user && Array.isArray(authStore.user.roles) && authStore.user.roles.includes('administrador'));
+// Indica si el usuario autenticado pertenece al rol "analista"
+const isAnalista = computed(() => authStore.user && Array.isArray(authStore.user.roles) && authStore.user.roles.includes('analista'));
 
 // Oculta completamente el header solo cuando estamos en /login
 // y el parámetro redirect apunta a una ruta de verificación de operativo

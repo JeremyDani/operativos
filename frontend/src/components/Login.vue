@@ -67,10 +67,20 @@ export default {
 
         // Extraer payload del usuario y propagar roles al store
         const userPayload = response.data.user || response.data || {};
-        const nombre = userPayload.first_name
-          ? `${userPayload.first_name} ${userPayload.last_name || ''}`.trim()
-          : (userPayload.username || this.username || '');
+        const userId = Object.prototype.hasOwnProperty.call(userPayload, 'id')
+          ? userPayload.id
+          : null;
+        const username = userPayload.username || this.username || '';
+        const nombreApellido = userPayload.nombre_apellido
+          || (userPayload.first_name
+                ? `${userPayload.first_name} ${userPayload.last_name || ''}`.trim()
+                : '');
+        const nombre = nombreApellido || username;
         const email = userPayload.email || '';
+        const origen = userPayload.origen || '';
+        const cedula = Object.prototype.hasOwnProperty.call(userPayload, 'cedula')
+          ? userPayload.cedula
+          : null;
 
         // Normalizar roles: el backend puede devolver nombres (strings) o grupos (objetos)
         let roles = [];
@@ -80,8 +90,8 @@ export default {
           roles = userPayload.groups.map(g => (typeof g === 'string' ? g : (g.name || g.nombre || ''))).filter(Boolean);
         }
 
-        auth.setUser({ nombre, email, roles });
-        console.debug('Login: auth.setUser llamado', { nombre, email, roles }, auth.isAuthenticated, auth.user);
+        auth.setUser({ id: userId, nombre, nombre_apellido: nombreApellido, username, email, origen, cedula, roles });
+        console.debug('Login: auth.setUser llamado', { userId, nombre, nombreApellido, username, email, origen, cedula, roles }, auth.isAuthenticated, auth.user);
 
         this.$router.push('/operativos'); // redirigir a la lista de operativos
         // Nota: aquí se podría guardar un token en localStorage si el backend lo devuelve

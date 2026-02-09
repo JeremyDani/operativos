@@ -39,11 +39,11 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/settings',
-    name: 'Settings',
+    path: '/ajustes',
+    name: 'Ajustes',
     component: Settings,
-    // Ajustes sólo para administradores
-    meta: { requiresAuth: true, roles: ['administrador'] }
+    // Ajustes accesibles para cualquier usuario autenticado
+    meta: { requiresAuth: true }
   },
   {
     path: '/operativos/:id/verificar', // Nueva ruta dinámica

@@ -29,7 +29,9 @@ Dentro de la carpeta apps/ hay varios módulos (aplicaciones) separados por resp
   - Modelos de usuario/perfil (si hay personalización).
   - Formularios para login / registro (lado Django).
   - Vistas y URLs relacionadas con cuentas.
-- Relación con el frontend: el login del sistema (Vue) habla con este módulo para validar credenciales.
+- Relación con el frontend:
+  - El login del sistema (Vue) usa un endpoint JSON (`/api/cuenta/login/`) que valida el usuario y devuelve datos básicos (nombre, correo, roles, etc.).
+  - Existe un endpoint de cambio de contraseña (`/api/auth/change-password`) que recibe la contraseña actual y la nueva, y actualiza la del usuario autenticado.
 
 2.2) apps/operativos
 ---------------------
@@ -83,7 +85,44 @@ Ubicación: frontend/
   - /operativos                -> listado de operativos.
   - /operativos/:id/verificar  -> verificación de cédula en un operativo concreto.
   - /reportes/historico        -> reportes / estadísticas históricas.
+  - /perfil                    -> datos básicos del usuario (nombre, cédula, correo, roles).
+  - /ajustes                   -> pantalla de ajustes personales (incluye cambio de contraseña).
 - El frontend consume la API del backend (las apps Django) para mostrar datos y registrar acciones.
+
+3.1) Componentes y pantallas destacadas
+---------------------------------------
+
+- Pantalla de operativos (`/operativos` — componente Operativos.vue):
+  - Muestra la lista de operativos disponibles.
+  - Incluye un icono de calendario en la parte superior del sistema.
+  - Al hacer clic en ese icono se abre un calendario emergente (modal) que muestra:
+    - Puntos rojos en los días con operativos que ya comenzaron.
+    - Puntos verdes en los días con operativos que están por iniciar.
+  - El calendario permite navegar por meses y años.
+  - Si se hace clic en un día, la lista de operativos se filtra para mostrar solo los de esa fecha; se puede quitar el filtro desde un aviso sobre la lista.
+
+- Pantalla de reportes históricos (`/reportes/historico` — componente ReportesHistorico.vue):
+  - Título principal: "Reporte".
+  - Subtítulo: "Reporte  de participaciones en los operativos".
+  - Muestra un rango de fechas (desde / hasta) en la parte superior, que filtra las estadísticas históricas.
+  - Presenta gráficas y listados agregados por ente y por tipo de operativo.
+  - Tiene un botón "Descargar PDF" que usa la función de impresión del navegador para generar un PDF/captura del reporte con el rango de fechas seleccionado.
+
+- Pantalla de perfil (`/perfil` — componente Profile.vue):
+  - Lee la información del usuario autenticado (nombre, cédula, correo, roles) desde el store de autenticación.
+  - Muestra esta información de forma resumida para que el usuario sepa con qué cuenta está trabajando.
+
+- Pantalla de ajustes (`/ajustes` — componente Settings.vue):
+  - Accesible desde el icono de usuario en la barra superior.
+  - Contiene una opción "Cambio de contraseña" que, al hacer clic, abre una ventana emergente.
+  - En el modal se solicita la contraseña actual, la nueva y su confirmación; al enviar el formulario se llama al endpoint backend `/api/auth/change-password`.
+  - Se muestran mensajes claros de éxito o error según la respuesta del servidor.
+
+- Comportamiento de sesión en el frontend:
+  - El estado de usuario se guarda en una sesión de navegador (sessionStorage), de forma que al cerrar la pestaña o ventana, la información se pierde y será necesario iniciar sesión de nuevo al reabrir la aplicación.
+  - La barra superior muestra iconos distintos según el rol:
+    - Icono de calendario: visible para cualquier usuario autenticado (operadores, analistas, administradores).
+    - Icono de reportes: visible para administradores, analistas y usuarios sin rol, pero no para operadores.
 
 ============================================================
 4) SCRIPTS Y TAREAS DE MANTENIMIENTO (scripts/)

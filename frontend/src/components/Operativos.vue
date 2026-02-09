@@ -360,7 +360,7 @@ table {
 
 /* Card layout */
 .operativos-card{background: rgba(255,255,255,0.96);border-radius:10px;box-shadow:0 12px 30px rgba(15,23,42,0.16);overflow:hidden;max-width:900px;width:100%}
-.card-header{padding:14px 18px;font-weight:700;background:transparent;color:#333;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center}
+.card-header{padding:14px 18px;font-weight:700;background:transparent;color:#333;border-bottom:1px solid #eee;display:flex;justify-content:center;align-items:center;text-align:center}
 .card-body{padding:0}
 
 .calendar-popup {
@@ -513,13 +513,13 @@ table {
 .list-row:hover{background:#fbfbfb}
 .row-left{flex:1}
 .operativo-main{display:flex;flex-direction:column}
-.operativo-title{font-weight:600;color:#333}
+.operativo-title{font-weight:600;color:#333;text-align:center}
 .operativo-title a{color:inherit;text-decoration:none}
 .operativo-title a:hover{text-decoration:underline}
-.subtitle{font-size:0.9rem;color:#777;margin-top:6px}
+.subtitle{font-size:0.9rem;color:#777;margin-top:6px;text-align:center}
 .row-right{display:flex;gap:16px;align-items:center}
-.lugar{color:#666;min-width:220px;text-align:right}
-.acciones{min-width:140px;text-align:right}
+.lugar{color:#666;min-width:220px;text-align:center}
+.acciones{min-width:140px;text-align:center}
 
 .details-button, .register-button {
   padding: 5px 10px;

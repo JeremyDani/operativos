@@ -120,6 +120,11 @@ STATIC_ROOT         = os.path.join(BASE_DIR, 'staticfiles/')
 MEDIA_ROOT          = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL           = '/media/'
 
+# Hacer que la sesión de Django (incluido el admin) expire
+# al cerrar el navegador, obligando a volver a iniciar sesión
+# cuando se reabra la URL /admin/.
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 
 
 

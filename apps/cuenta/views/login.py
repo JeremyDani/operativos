@@ -30,13 +30,18 @@ def login_view(request):
                     pass
 
                 # Construir payload del usuario incluyendo los grupos (roles)
+                # y campos personalizados usados en el frontend (nombre_apellido, origen, cedula, id).
                 user_info = {
+                    'id': getattr(user, 'id', None),
                     'username': getattr(user, 'username', ''),
                     'first_name': getattr(user, 'first_name', ''),
                     'last_name': getattr(user, 'last_name', ''),
                     'email': getattr(user, 'email', ''),
                     'is_staff': getattr(user, 'is_staff', False),
                     'roles': list(user.groups.values_list('name', flat=True)),
+                    'origen': getattr(user, 'origen', ''),
+                    'cedula': getattr(user, 'cedula', None),
+                    'nombre_apellido': getattr(user, 'nombre_apellido', ''),
                 }
 
                 return JsonResponse({'message': 'Inicio de sesión exitoso', 'user': user_info}, status=200)

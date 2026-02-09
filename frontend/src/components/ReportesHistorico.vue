@@ -11,7 +11,7 @@
       <header class="topbar">
         <div class="topbar-left">
           <h1>Reporte</h1>
-          <div class="topbar-subtitle">Participaciones históricas de operativos</div>
+          <div class="topbar-subtitle">Reporte  de participaciones en los operativos</div>
           <div class="topbar-subtitle" v-if="startDate && endDate">
             Desde {{ formatDate(startDate) }} hasta {{ formatDate(endDate) }}
           </div>
@@ -178,7 +178,9 @@ export default {
       if (this.startDate) params.desde = this.startDate;
       if (this.endDate) params.hasta = this.endDate;
 
-      const res = await axios.get('http://127.0.0.1:8000/api/historico/stats', { params });
+      // Usar ruta relativa para que pase por el mismo origen
+      // (Vite proxy hacia Django) y evitar problemas de CORS.
+      const res = await axios.get('/api/historico/stats', { params });
       this.porEnte = res.data.por_ente || [];
       this.porTipo = res.data.por_tipo_operativo || [];
       this.renderCharts();

@@ -196,3 +196,36 @@ curl -sS -H 'Accept: application/json' https://<host>/api/operativos/
 ---
 
 _Fin del documento — mantener sincronizado con cambios de arquitectura o despliegue._
+
+**11. Cambios funcionales recientes (interfaz)**
+
+Esta sección resume ajustes funcionales visibles para los usuarios finales que ya están desplegados:
+
+- **Reporte histórico de participaciones** (`/reportes/historico`):
+  - Subtítulo actualizado a: "Reporte  de participaciones en los operativos".
+  - Se habilitó un filtro de rango de fechas (desde / hasta) en la parte superior; el backend (`/api/historico/stats`) recibe estos parámetros y devuelve estadísticas acotadas al rango.
+  - Se muestra explícitamente el rango seleccionado en el encabezado del reporte (formato DD/MM/AAAA).
+  - El botón **"Descargar PDF"** dispara la impresión del navegador para generar un PDF del tablero con el rango actual.
+
+- **Calendario de operativos** (`/operativos`):
+  - Se agregó un icono de calendario en la barra superior del frontend; al pulsarlo, se abre un calendario emergente (modal) con vista mensual.
+  - El calendario:
+    - Marca con puntos rojos los días con operativos ya iniciados.
+    - Marca con puntos verdes los días con operativos próximos.
+    - Permite navegar hacia meses/años anteriores y siguientes.
+  - Al hacer clic en un día, la lista de operativos se filtra por esa fecha y se muestra un indicador de filtro con opción para limpiarlo.
+
+- **Perfil y ajustes de usuario**:
+  - Se añadió una ruta `/perfil` donde el usuario puede ver su nombre completo, cédula, correo y roles asignados.
+  - Se creó una pantalla `/ajustes`, accesible desde el icono de usuario, que contiene una opción **Cambio de contraseña**.
+  - Al hacer clic en **Cambio de contraseña** se abre un modal que solicita contraseña actual, nueva y confirmación; este formulario consume el endpoint backend `/api/auth/change-password`.
+
+- **Comportamiento de sesión (frontend y admin)**:
+  - El frontend ahora almacena los datos de usuario en `sessionStorage` (no en `localStorage`), lo que implica que al cerrar la pestaña o ventana del navegador el usuario deberá iniciar sesión de nuevo al regresar.
+  - En el admin de Django (`/admin`) se configuró `SESSION_EXPIRE_AT_BROWSER_CLOSE = True`, de modo que al cerrar el navegador completo la sesión administrativa se cierra y, al volver a entrar a `/admin/`, se muestra de nuevo la pantalla de login.
+
+- **Visibilidad de iconos según rol**:
+  - Icono de calendario: se muestra para cualquier usuario autenticado (operador, analista, administrador).
+  - Icono de reportes: se muestra para administradores, analistas y usuarios sin rol explícito, pero se oculta para el rol operador.
+
+> Nota operativa: si se modifican estos comportamientos (por ejemplo, nuevos tipos de filtros o cambios en la lógica de colores del calendario), actualizar esta sección junto con la documentación funcional de usuarios.
